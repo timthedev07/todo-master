@@ -1,0 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Neucha&display=swap');
+
+/* Dark theme */
+body {
+    background-color: rgba(53, 58, 71, 0.952);
+    
+    font-family: 'Ubuntu', sans-serif;
+}
+
+#page-heading {
+    color: #ffff00;
+    margin: 7vw;
+    font-size: 5vw;
+    text-transform: uppercase;
+    font-family: 'Neucha', cursive;
+    letter-spacing: 3px;
+}
