@@ -6,7 +6,7 @@ import { Dashboard } from "./components/Dashboard";
 
 import "./css/master.css";
 import {
-  BrowserRouter as Router,
+  HashRouter as Router,
   Switch,
   Route,
 } from "react-router-dom";
