@@ -1,0 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Cantora+One&display=swap');
+
+
+h1#not-found-header {
+    font-family: 'Cantora One', sans-serif;
+    font-size: 12vw;
+    margin-top: 20vh;
+    text-align: center;
+    color: #ffff00;
+}
+h3#not-found-subheader {
+    font-family: 'Cantora One', sans-serif;
+    font-size: 4vw;
+    margin-top: 10vh;
+    text-align: center;
+    color: rgb(241, 241, 241);
+}

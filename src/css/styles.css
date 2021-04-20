@@ -1,18 +1,50 @@
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Neucha&display=swap');
 
-/* Dark theme */
 body {
     background-color: rgba(53, 58, 71, 0.952);
     
     font-family: 'Ubuntu', sans-serif;
+    overflow-x: hidden;
+
 }
 
 #page-heading {
     color: #ffff00;
     margin: 7vw;
-    font-size: 5vw;
+    font-size: 50px;
     text-transform: uppercase;
     font-family: 'Neucha', cursive;
     letter-spacing: 3px;
+}
+
+.bg-dark {
+    color: rgb(221, 221, 221) !important;
+}
+
+
+.bg-dark::placeholder {
+    color: rgb(206, 206, 206);
+    opacity: 1; /* Firefox */
+}
+
+.markdown, .mono {
+    font-family: Consolas,monaco,monospace; 
+}
+
+@media screen and (max-width: 800px) {
+    #page-heading {
+        font-size: 50px;
+    }
+}
+
+body {
+    width: 98vw;
+    height: 98vh;
+}
+
+@media screen and (min-width: 1000px) {
+    #page-heading {
+        font-size: 70px;
+    }
 }

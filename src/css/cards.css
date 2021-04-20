@@ -1,0 +1,151 @@
+
+
+#tasks-container {
+    overflow: hidden;
+    position: relative;
+    margin: auto;
+}
+
+
+.flex-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+}
+
+.card {
+    display: inline-block;
+    position: relative;
+    background: transparent;
+    width: 230px;
+    height: 350px;
+    margin: 30px;
+    border: none;
+}
+
+.face {
+    width: 230px;
+    height: 175px;
+    border: none;
+    transition: 0.4s;
+}
+
+.face1 {
+    border: none;
+    position: relative;
+    display: flex;
+    background-color: rgba(153, 153, 153);
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+    transform: translateY(100px);
+    z-index: 20;
+}
+
+.face1 .card-content {
+    opacity: 0.2;
+    transition: 0.4s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.card:hover .face.face1 .card-content {
+    opacity: 1;
+}
+
+.face.face1 .card-content h3 {
+    text-align: center;
+}
+
+.card:hover .face.face1 {
+    background-color: #16ecace7;
+    transform: translateY(0);
+}
+
+.card:hover .face.face2 {
+    transform: translateY(0);
+}
+
+
+.card-content img {
+    max-width: 100px;
+}
+
+h3.task-title {
+    margin: 10px 0 0;
+}
+
+.face2 {
+    border: none;
+    position: relative;
+    display: flex;
+    background-color: transparent;
+    padding: 5px;
+    box-sizing: border-box;
+    box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.8);
+    z-index: 1;
+    background-color: rgb(230, 230, 230);
+    transform: translateY(-75px);
+}
+
+.add-task-container.container {
+    z-index: 1000;
+}
+
+.task-card-icon {
+    width: 100px;
+    height: 100px;
+}
+
+.face2 .card-content p {
+    margin: 4px;
+    padding: 0;
+    width: 210px;
+}
+
+
+.face2 .card-content button {
+    margin: 4px;
+    display: inline-block;
+    text-decoration: none;
+    position: fixed;
+    bottom: 5%;
+    left: 5%;
+}
+
+.face2 .card-content .task-card-control {
+    overflow: hidden;
+    position: fixed;
+    bottom: 10%;
+    left: 70%;
+}
+
+.popup-container {
+    overflow-y: scroll;
+}
+
+.control-icons {
+    margin: 3px;
+    cursor: pointer;
+    display: inline-block;
+}
+
+
+/* Overriding some style on smaller screens */
+@media screen and (max-width: 290px) {
+    #tasks-container {
+        margin: 0px;
+    }
+    .card {
+        margin: 10px;
+        width: 180px;
+    }
+    .face {
+        width: 180px;
+    }
+}
