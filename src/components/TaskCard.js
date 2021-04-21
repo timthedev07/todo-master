@@ -44,8 +44,9 @@ export class TaskCard extends Component {
     }
 
     markAsDone = () => {
+        console.log(this.props.object.id);
         updateTask({
-            id: this.props.id,
+            id: this.props.object.id,
             done: true
         });
         window.location.reload();

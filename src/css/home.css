@@ -1,0 +1,51 @@
+#homepage-container {
+    margin: 30px;
+    color: whitesmoke;
+}
+/* .homepage-intro-content {
+    
+} */
+
+
+#homepage-intro {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+
+#homepage-intro p {
+    max-width: 30%;
+    font-size: 21px;
+    padding-top: 20px;
+}
+
+.chapter-head {
+    margin-left: 10%;
+    margin-bottom: 5%;
+}
+
+/* Overriding some style on smaller screens */
+@media screen and (max-width: 664px) {
+    #homepage-intro {
+        display: block;
+    }
+    #homepage-intro p {
+        max-width: 100%;
+        font-size: 18px;
+        padding-top: 17px;
+    }
+    #targetIcon {
+        max-width: 300px;
+    }
+}
+
+@media screen and (max-width: 364px) {
+    #targetIcon {
+        max-width: 200px;
+    }
+    #homepage-intro p {
+        max-width: 100%;
+        font-size: 14px;
+        padding-top: 17px;
+    }
+}

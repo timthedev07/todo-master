@@ -39,13 +39,16 @@ export function createTask(title, body) {
  *  @param {JSON} options accepts the structure above
  */
 export function updateTask(options) {
+    console.log(options)
     let tasks = JSON.parse(localStorage.getItem('tasks'));
     for (let i = 0; i < tasks.length; i++) {
         if (tasks[i].id === options.id) {
             // if no input is provided, then keep the previous one
             tasks[i].title = options.newTitle || tasks[i].title;
             tasks[i].body = options.newBody || tasks[i].body;
-            tasks[i].done = options.done || tasks[i].done;
+            if (options.done !== null) {
+                tasks[i].done = options.done;
+            }
             break;
         }
     }
