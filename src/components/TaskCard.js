@@ -88,7 +88,7 @@ export class TaskCard extends Component {
         } else {
             body = task_info.body;
             for (let i = 0, sequence = body.split(' '), l = sequence.length; i < l; i++) {
-                if (sequence[i].length > BODY_CHARS_THRESHOLD || body.length > 200) {
+                if (sequence[i].length > BODY_CHARS_THRESHOLD || body.length > 90) {
                     body = `${task_info.body.trim().slice(0, BODY_CHARS_THRESHOLD)}...`;
                     break;
                 }
