@@ -58,7 +58,7 @@ export class TaskDetails extends Component {
     let id = this.props.id;
     updateTask({
       id: id,
-      newTitle: title, 
+      newTitle: title,
       newBody: body
     });
     this.resetAddPopup(false);
@@ -85,9 +85,8 @@ export class TaskDetails extends Component {
       <div
         id="add-popup-container"
         className="popup-container"
-        style={{ 
+        style={{
           display: display_style.toLowerCase(),
-          overflowY: 'hidden'
         }}>
 
         <Container className="add-task-container">
