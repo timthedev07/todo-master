@@ -31,18 +31,24 @@ export function updateConfig(key, value) {
     let config = JSON.parse(localStorage.getItem('config'));
     config[key] = value;
     localStorage.setItem('config', JSON.stringify(config));
+    console.log(JSON.stringify(config));
+    console.log({ key, value });
     return config;
 }
 
+export function configEmpty() {
+    return JSON.parse(localStorage.getItem('config')).length < 1;
+}
+
 export function retrieve(key) {
-    try{
+    try {
         return JSON.parse(localStorage.getItem('config'))[key];
 
-    } catch(err) {
+    } catch (err) {
         let config = []
         localStorage.setItem('config', JSON.stringify(config));
         return null;
     }
-    
+
 }
 

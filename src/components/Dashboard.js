@@ -2,7 +2,7 @@ import { Component, createRef } from "react";
 import { Button, Container } from "react-bootstrap";
 import { Popup } from "./Popup.js";
 import { AddPopup } from "./addPopup";
-import { retrieve } from "../helpers/Config";
+import { retrieve, configEmpty } from "../helpers/Config";
 import { TaskCard } from "./TaskCard";
 
 export class Dashboard extends Component {
@@ -40,15 +40,15 @@ export class Dashboard extends Component {
 
     render() {
         let PopupDisplay;
-        
-        if (this.state["tip-popup"] === true) {
+
+        if (this.state["tip-popup"] === true || configEmpty()) {
             PopupDisplay = <Popup />;
         }
 
         let tasks_render = [];
         let tasks = JSON.parse(localStorage.getItem('tasks'));
         if (tasks === null) {
-            tasks_render.push(<h2 key="no-tasks" style={{textAlign: 'center', color: 'white'}}>No Tasks To Do Yet...</h2>)
+            tasks_render.push(<h2 key="no-tasks" style={{ textAlign: 'center', color: 'white' }}>No Tasks To Do Yet...</h2>)
         } else {
             let l = tasks.length;
             for (let i = 0; i < l; i++) {
@@ -63,11 +63,11 @@ export class Dashboard extends Component {
             <div id="dashboard-container">
                 {PopupDisplay}
                 <AddPopup display={this.state["add-popup"]} bindingStateHandler={this.resetAddPopupState} stateModifier={this.changeDisplayAttr} />
-                <Container style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                    <Button style={{margin: 'auto'}} id="add-popup-trigger-button" variant="info" onClick={() => this.handleClickAddPopup()}>Add a New Task</Button>
+                <Container style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <Button style={{ margin: 'auto' }} id="add-popup-trigger-button" variant="info" onClick={() => this.handleClickAddPopup()}>Add a New Task</Button>
                 </Container>
                 <br />
-                <Container style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                <Container style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 </Container>
                 <div className="flex-wrapper">
                     <div id="tasks-container">
