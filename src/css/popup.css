@@ -10,15 +10,14 @@
     transform: translate(-50%, -50%);
     padding: 7px;
     padding-bottom: 14vh;
-    overflow-x: hidden;
-    overflow-y: hidden;
+    overflow-y: scroll;
 }
 
 @media screen and (max-width: 360px) {
     .popup-container {
         width: 80vw;
     }
-}   
+}
 
 #draggable-form {
     z-index: 1000;
@@ -47,7 +46,6 @@
     vertical-align: baseline;
     position: absolute;
     bottom: 0;
-
 }
 
 .tip-container {

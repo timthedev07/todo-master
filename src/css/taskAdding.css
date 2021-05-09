@@ -1,11 +1,13 @@
-
-
 .popup-container {
     z-index: 99;
-    overflow-y: hidden;
+    overflow-y: scroll;
+}
+
+.markdown {
+    resize: vertical;
+    min-height: 200px;
 }
 
 .ta-form {
     margin-top: 4px;
 }
-
