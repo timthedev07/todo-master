@@ -2,7 +2,6 @@ import { Component, createRef } from "react";
 import { Button, Container } from "react-bootstrap";
 import { Popup } from "./Popup.js";
 import { AddPopup } from "./addPopup";
-import { retrieve, configEmpty } from "../helpers/Config";
 import { TaskCard } from "./TaskCard";
 
 export class Dashboard extends Component {
@@ -11,7 +10,7 @@ export class Dashboard extends Component {
         this.titleRef = createRef();
         this.contentRef = createRef();
         this.state = {
-            "tip-popup": retrieve('showtip-addTask'),
+            "tip-popup": localStorage.getItem('showtip-addTask'),
             "add-popup": "none"
         }
     }
@@ -40,15 +39,14 @@ export class Dashboard extends Component {
 
     render() {
         let PopupDisplay;
-
-        if (this.state["tip-popup"] === true || configEmpty()) {
+        if (this.state["tip-popup"] === 'true' || this.state["tip-popup"] === 'null' || this.state["tip-popup"] === null) {
             PopupDisplay = <Popup />;
         }
 
         let tasks_render = [];
         let tasks = JSON.parse(localStorage.getItem('tasks'));
         if (tasks === null) {
-            tasks_render.push(<h2 key="no-tasks" style={{ textAlign: 'center', color: 'white' }}>No Tasks To Do Yet...</h2>)
+            tasks_render.push(<h5 key="no-tasks" style={{ textAlign: 'center', color: 'white' }}>No Tasks To Do Yet...</h5>)
         } else {
             let l = tasks.length;
             for (let i = 0; i < l; i++) {

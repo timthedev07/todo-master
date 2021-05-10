@@ -1,11 +1,8 @@
-
-
 .popup-container {
     z-index: 99;
-    overflow-y: hidden;
+    overflow-y: scroll;
 }
 
 .ta-form {
     margin-top: 4px;
 }
-

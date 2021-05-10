@@ -1,12 +1,21 @@
-@import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Neucha&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Ubuntu&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Neucha&display=swap");
 
 body {
-    background-color: rgba(53, 58, 71, 0.952);
-    
-    font-family: 'Ubuntu', sans-serif;
-    overflow-x: hidden;
+    background-color: rgba(37, 41, 49, 0.952);
 
+    font-family: "Ubuntu", sans-serif;
+    overflow-x: hidden;
+}
+
+a {
+    color: rgb(255, 217, 5);
+    text-decoration: none;
+}
+
+a:hover {
+    color: rgb(255, 217, 5);
+    text-decoration: underline;
 }
 
 #page-heading {
@@ -14,7 +23,7 @@ body {
     margin: 7vw;
     font-size: 50px;
     text-transform: uppercase;
-    font-family: 'Neucha', cursive;
+    font-family: "Neucha", cursive;
     letter-spacing: 3px;
 }
 
@@ -22,14 +31,14 @@ body {
     color: rgb(221, 221, 221) !important;
 }
 
-
 .bg-dark::placeholder {
     color: rgb(206, 206, 206);
     opacity: 1; /* Firefox */
 }
 
-.markdown, .mono {
-    font-family: Consolas,monaco,monospace; 
+.markdown,
+.mono {
+    font-family: Consolas, monaco, monospace;
 }
 
 @media screen and (max-width: 800px) {
@@ -41,6 +50,10 @@ body {
 body {
     width: 98vw;
     height: 98vh;
+}
+
+#heading-link:hover {
+    text-decoration: none;
 }
 
 @media screen and (min-width: 1000px) {

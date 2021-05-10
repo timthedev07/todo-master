@@ -1,6 +1,6 @@
 import { Component, createRef } from "react";
 import { Button, Container, Form } from "react-bootstrap";
-import {ReactComponent as CloseIcon} from "../icons/close.svg";
+import { ReactComponent as CloseIcon } from "../icons/close.svg";
 import { createTask } from "../helpers/Tasks";
 
 export class AddPopup extends Component {
@@ -37,29 +37,29 @@ export class AddPopup extends Component {
 
     render() {
         let display_style = this.props.display;
-        
+
         return (
 
 
-                    <Container className="popup-container" style={{display: display_style.toLowerCase(), overflowY: 'hidden'}}>
-                        <div id="close-icon-wrapper" onClick={() => this.handleClick()}>
-                            <CloseIcon />
-                        </div>
-                        <Form>
-                            <Form.Group>
-                                <Form.Control className="mono bg-dark" ref={this.titleRef} placeholder="Title" id="new-task-title" type="text" maxLength={32} />
-                                <Form.Control 
-                                    className="markdown ta-form mono bg-dark" 
-                                    maxLength="500"
-                                    ref={this.contentRef} 
-                                    as="textarea" 
-                                    placeholder="something about the task..."
-                                    rows="14" />
-                                
-                            </Form.Group>
-                            <Button onClick={(event) => this.handleSubmit(event)} variant="primary">Add</Button>
-                        </Form>
-                    </Container>
+            <Container className="popup-container" style={{ display: display_style.toLowerCase() }}>
+                <div id="close-icon-wrapper" onClick={() => this.handleClick()}>
+                    <CloseIcon />
+                </div>
+                <Form>
+                    <Form.Group>
+                        <Form.Control className="mono bg-dark" ref={this.titleRef} placeholder="Title" id="new-task-title" type="text" maxLength={32} />
+                        <Form.Control
+                            className="markdown ta-form mono bg-dark"
+                            maxLength="500"
+                            ref={this.contentRef}
+                            as="textarea"
+                            placeholder="something about the task..."
+                            rows="14" />
+
+                    </Form.Group>
+                    <Button onClick={(event) => this.handleSubmit(event)} variant="primary">Add</Button>
+                </Form>
+            </Container>
         )
     }
 }
