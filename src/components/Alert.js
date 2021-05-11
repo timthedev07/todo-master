@@ -1,15 +1,20 @@
-
 import { Component } from "react";
+import { Alert as BootstrapAlert } from "react-bootstrap";
 
 export class Alert extends Component {
     render() {
         const visibility = {
-            visibility: this.props.visibility
-        }
+            visibility: this.props.visibility,
+            height: "50px",
+        };
         return (
-            <div style={visibility} id="info-alert" className={`alert alert-${this.props.alertType}`}>
+            <BootstrapAlert
+                style={visibility}
+                id="info-alert"
+                variant={this.props.type}
+            >
                 {this.props.message}
-            </div>
-        )
+            </BootstrapAlert>
+        );
     }
 }

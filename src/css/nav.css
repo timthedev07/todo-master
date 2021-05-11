@@ -40,6 +40,8 @@
     transition: 0.4s;
     background-color: transparent;
     border-radius: 10px;
+    color: rgb(255, 217, 5);
+    text-decoration: none;
 }
 
 /* adjust nav item size on tablets and ipads */
@@ -58,6 +60,20 @@
     background-color: rgba(97, 102, 112, 0.719);
 }
 
+.dropdown-menu {
+    background-color: #55585f;
+    width: 50vw;
+}
+
 .nav-dropdown-item {
+    text-align: center;
     text-transform: uppercase;
+    color: rgb(255, 217, 5);
+    text-decoration: none;
+    background-color: #55585f;
+}
+
+.nav-dropdown-item:hover {
+    color: rgb(255, 217, 5);
+    background-color: #777b85;
 }

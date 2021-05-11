@@ -1,30 +1,21 @@
+import { useAuth } from "../../context/AuthContext";
 import { useRef, useState, useEffect } from "react";
 import { Form, Button, Container } from "react-bootstrap";
 import { Alert } from "../Alert";
-import { Redirect, Link } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
 import { Loading } from "../Loading";
 
 const THRESHOLD = 290;
 
-export function Login() {
+export function ForgotPassword() {
     const emRef = useRef();
-    const pwRef = useRef();
 
     const [alertDisplay, setAlertDisplay] = useState("hidden");
     const [alertType, setAlertType] = useState("danger");
     const [alertMessage, setAlertMessage] = useState("");
-    const [redirect, setRedirect] = useState(false);
-    const [location, setLocation] = useState("");
     const [loading, setLoading] = useState(false);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
-    const { login } = useAuth();
-
-    function routeToRegister() {
-        setLocation("/register");
-        setRedirect(true);
-    }
+    const { resetPassword } = useAuth();
 
     useEffect(() => {
         function handleResize() {
@@ -38,36 +29,32 @@ export function Login() {
         event.preventDefault();
 
         setLoading(true);
-
-        // get the values of the fields
-        const email = emRef.current.value;
-        const password = pwRef.current.value;
-
         setAlertMessage("");
         setAlertDisplay("hidden");
-        login(email, password)
-            .then((userCredential) => {
-                // Signed in
-                // var user = userCredential.user;
+        // get the values of the fields
+        const email = emRef.current.value;
+        resetPassword(email)
+            .then(() => {
+                setAlertMessage("Sent, check email for further instruction");
+                setAlertDisplay("visible");
+                setAlertType("success");
                 setLoading(false);
-                setLocation("/dashboard");
-                setRedirect(true);
             })
             .catch((error) => {
-                setAlertMessage("Invalid email/password");
+                setAlertMessage(error.code);
                 setAlertDisplay("visible");
                 setAlertType("danger");
                 setLoading(false);
             });
     }
 
-    return !redirect ? (
+    return (
         <Container className="panels">
             {loading ? <Loading /> : null}
-            <h1 className="page-heading">Welcome Back</h1>
+            <h1 className="page-heading">Password Reset</h1>
 
             <Container className="d-flex">
-                <Form className="from-as-wrapper">
+                <Form className="from-as-wrapper" id="reset-email-form">
                     <Alert
                         visibility={alertDisplay}
                         type={alertType}
@@ -83,15 +70,7 @@ export function Login() {
                         />
                         <label>Email</label>
                     </div>
-                    <div className="input-data form-padding-child">
-                        <input
-                            required
-                            className="regular-input"
-                            type="password"
-                            ref={pwRef}
-                        />
-                        <label>Password</label>
-                    </div>
+
                     <div className="text-center form-padding-child">
                         {!loading ? (
                             <Button
@@ -100,7 +79,9 @@ export function Login() {
                                 type="submit"
                                 onClick={(event) => handleSubmit(event)}
                             >
-                                Sign in
+                                {windowWidth > THRESHOLD
+                                    ? "Reset Password"
+                                    : "Reset"}
                             </Button>
                         ) : (
                             <Button
@@ -110,32 +91,14 @@ export function Login() {
                                 className={"form-submit-button disabled"}
                                 onClick={(event) => handleSubmit(event)}
                             >
-                                Sign in
+                                {windowWidth > THRESHOLD
+                                    ? "Reset Password"
+                                    : "Reset"}
                             </Button>
                         )}
-                        <Link to="/forgot-password">
-                            <Button className="normal-links" variant="link">
-                                {windowWidth > THRESHOLD
-                                    ? "Forgot your password?"
-                                    : "Reset Password"}
-                            </Button>
-                        </Link>
-                    </div>
-                    <div className="text-center second-option-container">
-                        <Button
-                            variant="light"
-                            className="form-submit-button"
-                            onClick={() => routeToRegister()}
-                        >
-                            {windowWidth > THRESHOLD
-                                ? "Not a member yet?"
-                                : "Join"}
-                        </Button>
                     </div>
                 </Form>
             </Container>
         </Container>
-    ) : (
-        <Redirect to={location} />
     );
 }

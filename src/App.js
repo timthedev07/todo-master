@@ -1,44 +1,25 @@
-import { Component } from "react";
 import { Heading } from "./components/Heading";
 import { NotFound } from "./components/404";
 import { Login } from "./components/auth/Login";
 import { Register } from "./components/auth/Register";
 import { Home } from "./components/Home";
 import { Dashboard } from "./components/Dashboard";
+import { ForgotPassword } from "./components/auth/ForgotPassword";
 import "./css/master.css";
 import {
     BrowserRouter as Router,
     Switch,
     Route,
+    Redirect,
 } from "react-router-dom";
-// import firebase from "firebase/app";
-import 'firebase/firestore';
-import 'firebase/auth';
 import Nav from "./components/Nav";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 
-// import { useAuthState } from 'react-firebase-hooks/auth';
-// import { useCollectionData } from 'react-firebase-hooks/firestore';
+function App() {
+    const { currentUser } = useAuth();
 
-
-// var firebaseConfig = {
-//     apiKey: "AIzaSyCihFqVclU-LSPGfTtVxfj-iOifI7_088s",
-//     authDomain: "todo-dominus.firebaseapp.com",
-//     projectId: "todo-dominus",
-//     storageBucket: "todo-dominus.appspot.com",
-//     messagingSenderId: "20595187474",
-//     appId: "1:20595187474:web:102775cefbcc23febbddcb",
-//     measurementId: "G-P8PDFZRV41"
-// };
-// // Initialize Firebase
-// firebase.initializeApp(firebaseConfig);
-
-// const auth = firebase.auth();
-// const firestore = firebase.firestore();
-
-
-class App extends Component {
-    render() {
-        return (
+    return (
+        <AuthProvider>
             <Router>
                 <Switch>
                     <Route exact path="/">
@@ -47,20 +28,33 @@ class App extends Component {
                     </Route>
                     <Route exact path="/dashboard">
                         <Nav />
-                        <Heading alignment="left" />
                         <Dashboard />
                     </Route>
                     <Route exact path="/login">
-                        <Login />
+                        <Nav />
+                        {currentUser === null ? (
+                            <Login />
+                        ) : (
+                            <Redirect to="/dashboard" />
+                        )}
                     </Route>
                     <Route exact path="/register">
-                        <Register />
+                        <Nav />
+                        {currentUser === null ? (
+                            <Register />
+                        ) : (
+                            <Redirect to="/dashboard" />
+                        )}
+                    </Route>
+                    <Route exact path="/forgot-password">
+                        <Nav />
+                        <ForgotPassword />
                     </Route>
                     <Route component={NotFound} />
                 </Switch>
-            </Router >
-        );
-    }
+            </Router>
+        </AuthProvider>
+    );
 }
 
 export default App;

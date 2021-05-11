@@ -1,96 +1,171 @@
-import { Component, createRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Form, Button, Container } from "react-bootstrap";
 import { Alert } from "../Alert";
-import { Redirect } from 'react-router-dom';
+import { Redirect } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import { Loading } from "../Loading";
 
+const THRESHOLD = 290;
 
-export class Register extends Component {
-    constructor(props) {
-        super(props);
-        this.unRef = createRef();
-        this.pwRef = createRef();
-        this.confirmRef = createRef();
-        this.state = {
-            apiResponse: null,
-            alertDisplay: 'none',
-            alertType: 'danger',
-            alertMessage: '',
-            redirect: false,
-            window_width: window.innerWidth,
-            location: '',
-        };
-        window.scrollTo(0, document.body.scrollHeight || document.documentElement.scrollHeight);
+export function Register() {
+    const emRef = useRef();
+    const pwRef = useRef();
+    const confirmRef = useRef();
 
+    const [alertDisplay, setAlertDisplay] = useState("hidden");
+    const [alertType, setAlertType] = useState("danger");
+    const [alertMessage, setAlertMessage] = useState("");
+    const [redirect, setRedirect] = useState(false);
+    const [location, setLocation] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+    useEffect(() => {
+        function handleResize() {
+            setWindowWidth(window.innerWidth);
+        }
+        window.addEventListener("resize", handleResize);
+    });
+
+    const { signup } = useAuth();
+
+    function routeToLogin() {
+        setLocation("/login");
+        setRedirect(true);
     }
 
-    routeToLogin = () => {
-        this.setState({
-            redirect: true,
-            location: '/login'
-        });
-    }
+    useEffect(() => {
+        function handleResize() {
+            setWindowWidth(window.innerWidth);
+        }
+        window.addEventListener("resize", handleResize);
+    });
 
-
-
-    handleSubmit = (event) => {
+    function handleSubmit(event) {
         // prevent reload
         event.preventDefault();
 
+        setLoading(true);
+
         // get the values of the fields
-        const username = this.unRef.current.value;
-        const password = this.pwRef.current.value;
-        const confirmation = this.confirmRef.current.value;
+        const email = emRef.current.value;
+        const password = pwRef.current.value;
+        const confirmation = confirmRef.current.value;
 
-        // create option 
-        const options = {
-            username: username,
-            password: password,
-            confirmation: confirmation,
-        };
-        console.log(options);
+        if (password !== confirmation) {
+            setAlertDisplay("visible");
+            setAlertType("danger");
+            setAlertMessage("Passwords don't match");
+            setLoading(false);
+            return;
+        }
 
-        this.setState({
-            redirect: true,
-            location: '/dashboard'
-        });
+        setAlertMessage("");
+        setAlertDisplay("hidden");
+        signup(email, password)
+            .then((userCredential) => {
+                // Signed in
+                // var user = userCredential.user;
+                setLoading(false);
+                setLocation("/dashboard");
+                setRedirect(true);
+            })
+            .catch((error) => {
+                // handle different types of errors
+                const errorCode = error.code;
+                if (errorCode === "auth/invalid-email") {
+                    setAlertMessage(`Invalid email format`);
+                } else if (errorCode === "auth/weak-password") {
+                    setAlertMessage("Password too short");
+                } else {
+                    setAlertMessage(`Email already registered`);
+                }
+                setAlertDisplay("visible");
+                setAlertType("danger");
+                setLoading(false);
+            });
     }
 
-    render() {
-        return !this.state.redirect ? (
-            <Container className="panels">
-                <h1 className="page-heading">Join us</h1>
-                <Alert display={this.state.alertDisplay} type={this.state.alertType} message={this.state.alertMessage} />
-                <Container className="d-flex">
+    return !redirect ? (
+        <Container className="panels">
+            {loading ? <Loading /> : null}
+            <h1 className="page-heading">Join Us</h1>
 
-                    <Form className="from-as-wrapper">
-                        <div className="input-data form-padding-child">
-                            <span className="field-hint-icon"></span>
-                            <input required className="regular-input" type="text" ref={this.unRef} />
-                            <label>Username</label>
-                        </div>
-                        <div className="input-data form-padding-child">
-                            <input required className="regular-input" type="password" ref={this.pwRef} />
-                            <label>Password</label>
-                        </div>
-                        <div className="text-center form-padding-child">
-                            <Button variant="info"
-                                className="form-submit-button"
-                                onClick={(event) => this.handleSubmit(event)}> Sign in
-                            </Button>
-                        </div>
-                        <div className="text-center second-option-container">
-                            <Button variant="light"
-                                className="form-submit-button"
-                                onClick={() => this.routeToLogin()}>
-                                Not a member yet?
-                            </Button>
-                        </div>
-                    </Form>
+            <Container className="d-flex">
+                <Form className="from-as-wrapper" id="register-form">
+                    <Alert
+                        visibility={alertDisplay}
+                        type={alertType}
+                        message={alertMessage}
+                    />
+                    <div className="input-data form-padding-child">
+                        <input
+                            required
+                            className="regular-input"
+                            type="email"
+                            ref={emRef}
+                        />
+                        <label>Email</label>
+                    </div>
 
-                </Container >
-            </Container >
-        ) : (
-            <Redirect to={this.state.location} />
-        )
-    }
+                    <div className="input-data form-padding-child tooltip-container">
+                        <input
+                            required
+                            className="regular-input"
+                            type="password"
+                            ref={pwRef}
+                        />
+                        <span className="tooltiptext">
+                            Password must be at least 6 characters long
+                        </span>
+                        <label>Password</label>
+                    </div>
+                    <div className="input-data form-padding-child">
+                        <input
+                            required
+                            className="regular-input"
+                            type="password"
+                            ref={confirmRef}
+                        />
+                        <label>Confirmation</label>
+                    </div>
+                    <div className="text-center form-padding-child">
+                        {!loading ? (
+                            <Button
+                                variant="info"
+                                className={"form-submit-button"}
+                                type="submit"
+                                onClick={(event) => handleSubmit(event)}
+                            >
+                                Sign up
+                            </Button>
+                        ) : (
+                            <Button
+                                variant="info"
+                                disabled="disabled"
+                                type="submit"
+                                className={"form-submit-button disabled"}
+                                onClick={(event) => handleSubmit(event)}
+                            >
+                                Sign up
+                            </Button>
+                        )}
+                    </div>
+                    <div className="text-center second-option-container">
+                        <Button
+                            variant="light"
+                            className="form-submit-button"
+                            onClick={() => routeToLogin()}
+                        >
+                            {windowWidth > THRESHOLD
+                                ? "Already have an account?"
+                                : "Sign in"}
+                        </Button>
+                    </div>
+                </Form>
+            </Container>
+        </Container>
+    ) : (
+        <Redirect to={location} />
+    );
 }

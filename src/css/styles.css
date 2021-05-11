@@ -8,13 +8,17 @@ body {
     overflow-x: hidden;
 }
 
-a {
-    color: rgb(255, 217, 5);
+a,
+.normal-links {
+    color: rgb(250, 212, 0);
     text-decoration: none;
+    transform: scale(1);
+    transition: 0.3s;
 }
 
-a:hover {
-    color: rgb(255, 217, 5);
+a:hover,
+.normal-links:hover {
+    color: rgb(250, 212, 0);
     text-decoration: underline;
 }
 
@@ -39,6 +43,10 @@ a:hover {
 .markdown,
 .mono {
     font-family: Consolas, monaco, monospace;
+}
+
+.markdown {
+    max-height: 50vh;
 }
 
 @media screen and (max-width: 800px) {

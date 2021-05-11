@@ -1,11 +1,8 @@
-
-
 #tasks-container {
     overflow: hidden;
     position: relative;
     margin: auto;
 }
-
 
 .flex-wrapper {
     display: flex;
@@ -71,7 +68,6 @@
     transform: translateY(0);
 }
 
-
 .card-content img {
     max-width: 100px;
 }
@@ -108,7 +104,6 @@ h3.task-title {
     width: 210px;
 }
 
-
 .face2 .card-content button {
     margin: 4px;
     display: inline-block;
@@ -134,7 +129,6 @@ h3.task-title {
     cursor: pointer;
     display: inline-block;
 }
-
 
 /* Overriding some style on smaller screens */
 @media screen and (max-width: 290px) {
