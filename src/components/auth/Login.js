@@ -4,6 +4,8 @@ import { Alert } from "../Alert";
 import { Redirect, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { Loading } from "../Loading";
+import FacebookButton from "../FacebookButton";
+import GoogleButton from "../GoogleButton";
 
 const THRESHOLD = 290;
 
@@ -19,7 +21,7 @@ export function Login() {
     const [loading, setLoading] = useState(false);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
-    const { login } = useAuth();
+    const { login, signinWithGoogle, signinWithFacebook } = useAuth();
 
     function routeToRegister() {
         setLocation("/register");
@@ -32,6 +34,14 @@ export function Login() {
         }
         window.addEventListener("resize", handleResize);
     });
+
+    function googleSignin() {
+        signinWithGoogle();
+    }
+
+    function facebookSignin() {
+        signinWithFacebook();
+    }
 
     function handleSubmit(event) {
         // prevent reload
@@ -67,72 +77,81 @@ export function Login() {
             <h1 className="page-heading">Welcome Back</h1>
 
             <Container className="d-flex">
-                <Form className="from-as-wrapper">
-                    <Alert
-                        visibility={alertDisplay}
-                        type={alertType}
-                        message={alertMessage}
+                <div>
+                    <GoogleButton
+                        style={{ width: "100%" }}
+                        onClick={() => googleSignin()}
                     />
-                    <div className="input-data form-padding-child">
-                        <span className="field-hint-icon"></span>
-                        <input
-                            required
-                            className="regular-input"
-                            type="email"
-                            ref={emRef}
+
+                    <FacebookButton handleClick={facebookSignin} />
+
+                    <Form className="from-as-wrapper">
+                        <Alert
+                            visibility={alertDisplay}
+                            type={alertType}
+                            message={alertMessage}
                         />
-                        <label>Email</label>
-                    </div>
-                    <div className="input-data form-padding-child">
-                        <input
-                            required
-                            className="regular-input"
-                            type="password"
-                            ref={pwRef}
-                        />
-                        <label>Password</label>
-                    </div>
-                    <div className="text-center form-padding-child">
-                        {!loading ? (
+                        <div className="input-data form-padding-child">
+                            <span className="field-hint-icon"></span>
+                            <input
+                                required
+                                className="regular-input"
+                                type="email"
+                                ref={emRef}
+                            />
+                            <label>Email</label>
+                        </div>
+                        <div className="input-data form-padding-child">
+                            <input
+                                required
+                                className="regular-input"
+                                type="password"
+                                ref={pwRef}
+                            />
+                            <label>Password</label>
+                        </div>
+                        <div className="text-center form-padding-child">
+                            {!loading ? (
+                                <Button
+                                    variant="info"
+                                    className={"form-submit-button"}
+                                    type="submit"
+                                    onClick={(event) => handleSubmit(event)}
+                                >
+                                    Sign in
+                                </Button>
+                            ) : (
+                                <Button
+                                    variant="info"
+                                    disabled="disabled"
+                                    type="submit"
+                                    className={"form-submit-button disabled"}
+                                    onClick={(event) => handleSubmit(event)}
+                                >
+                                    Sign in
+                                </Button>
+                            )}
+                            <Link to="/forgot-password">
+                                <Button className="normal-links" variant="link">
+                                    {windowWidth > THRESHOLD
+                                        ? "Forgot your password?"
+                                        : "Reset Password"}
+                                </Button>
+                            </Link>
+                        </div>
+                        <div className="text-center second-option-container">
                             <Button
-                                variant="info"
-                                className={"form-submit-button"}
-                                type="submit"
-                                onClick={(event) => handleSubmit(event)}
+                                variant="light"
+                                className="form-submit-button"
+                                onClick={() => routeToRegister()}
                             >
-                                Sign in
-                            </Button>
-                        ) : (
-                            <Button
-                                variant="info"
-                                disabled="disabled"
-                                type="submit"
-                                className={"form-submit-button disabled"}
-                                onClick={(event) => handleSubmit(event)}
-                            >
-                                Sign in
-                            </Button>
-                        )}
-                        <Link to="/forgot-password">
-                            <Button className="normal-links" variant="link">
                                 {windowWidth > THRESHOLD
-                                    ? "Forgot your password?"
-                                    : "Reset Password"}
+                                    ? "Not a member yet?"
+                                    : "Join"}
                             </Button>
-                        </Link>
-                    </div>
-                    <div className="text-center second-option-container">
-                        <Button
-                            variant="light"
-                            className="form-submit-button"
-                            onClick={() => routeToRegister()}
-                        >
-                            {windowWidth > THRESHOLD
-                                ? "Not a member yet?"
-                                : "Join"}
-                        </Button>
-                    </div>
-                </Form>
+                        </div>
+                    </Form>
+                </div>
             </Container>
         </Container>
     ) : (

@@ -16,7 +16,7 @@ export function AuthProvider({ children }) {
         return auth.createUserWithEmailAndPassword(email, password);
     }
 
-    function stuff() {
+    function signinWithGoogle() {
         const provider = new firebase.auth.GoogleAuthProvider();
         return firebase.auth().signInWithPopup(provider);
     }
@@ -41,6 +41,11 @@ export function AuthProvider({ children }) {
         return currentUser.updatePassword(password);
     }
 
+    function signinWithFacebook() {
+        const provider = new firebase.auth.FacebookAuthProvider();
+        return firebase.auth().signInWithPopup(provider);
+    }
+
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged((user) => {
             setCurrentUser(user);
@@ -58,6 +63,8 @@ export function AuthProvider({ children }) {
         resetPassword,
         updateEmail,
         updatePassword,
+        signinWithGoogle,
+        signinWithFacebook,
     };
 
     return (

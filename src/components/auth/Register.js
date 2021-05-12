@@ -4,6 +4,8 @@ import { Alert } from "../Alert";
 import { Redirect } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { Loading } from "../Loading";
+import FacebookButton from "../FacebookButton";
+import GoogleButton from "../GoogleButton";
 
 const THRESHOLD = 290;
 
@@ -27,11 +29,19 @@ export function Register() {
         window.addEventListener("resize", handleResize);
     });
 
-    const { signup } = useAuth();
+    const { signup, signinWithGoogle, signinWithFacebook } = useAuth();
 
     function routeToLogin() {
         setLocation("/login");
         setRedirect(true);
+    }
+
+    function googleSignin() {
+        signinWithGoogle();
+    }
+
+    function facebookSignin() {
+        signinWithFacebook();
     }
 
     useEffect(() => {
@@ -92,77 +102,88 @@ export function Register() {
             <h1 className="page-heading">Join Us</h1>
 
             <Container className="d-flex">
-                <Form className="from-as-wrapper" id="register-form">
-                    <Alert
-                        visibility={alertDisplay}
-                        type={alertType}
-                        message={alertMessage}
+                <div>
+                    <GoogleButton
+                        style={{ width: "100%" }}
+                        onClick={() => googleSignin()}
+                        text="Sign up with google"
                     />
-                    <div className="input-data form-padding-child">
-                        <input
-                            required
-                            className="regular-input"
-                            type="email"
-                            ref={emRef}
+                    <FacebookButton
+                        text="Sign up with google"
+                        handleClick={facebookSignin}
+                    />
+                    <Form className="from-as-wrapper" id="register-form">
+                        <Alert
+                            visibility={alertDisplay}
+                            type={alertType}
+                            message={alertMessage}
                         />
-                        <label>Email</label>
-                    </div>
+                        <div className="input-data form-padding-child">
+                            <input
+                                required
+                                className="regular-input"
+                                type="email"
+                                ref={emRef}
+                            />
+                            <label>Email</label>
+                        </div>
 
-                    <div className="input-data form-padding-child tooltip-container">
-                        <input
-                            required
-                            className="regular-input"
-                            type="password"
-                            ref={pwRef}
-                        />
-                        <span className="tooltiptext">
-                            Password must be at least 6 characters long
-                        </span>
-                        <label>Password</label>
-                    </div>
-                    <div className="input-data form-padding-child">
-                        <input
-                            required
-                            className="regular-input"
-                            type="password"
-                            ref={confirmRef}
-                        />
-                        <label>Confirmation</label>
-                    </div>
-                    <div className="text-center form-padding-child">
-                        {!loading ? (
+                        <div className="input-data form-padding-child tooltip-container">
+                            <input
+                                required
+                                className="regular-input"
+                                type="password"
+                                ref={pwRef}
+                            />
+                            <span className="tooltiptext">
+                                Password must be at least 6 characters long
+                            </span>
+                            <label>Password</label>
+                        </div>
+                        <div className="input-data form-padding-child">
+                            <input
+                                required
+                                className="regular-input"
+                                type="password"
+                                ref={confirmRef}
+                            />
+                            <label>Confirmation</label>
+                        </div>
+                        <div className="text-center form-padding-child">
+                            {!loading ? (
+                                <Button
+                                    variant="info"
+                                    className={"form-submit-button"}
+                                    type="submit"
+                                    onClick={(event) => handleSubmit(event)}
+                                >
+                                    Sign up
+                                </Button>
+                            ) : (
+                                <Button
+                                    variant="info"
+                                    disabled="disabled"
+                                    type="submit"
+                                    className={"form-submit-button disabled"}
+                                    onClick={(event) => handleSubmit(event)}
+                                >
+                                    Sign up
+                                </Button>
+                            )}
+                        </div>
+                        <div className="text-center second-option-container">
                             <Button
-                                variant="info"
-                                className={"form-submit-button"}
-                                type="submit"
-                                onClick={(event) => handleSubmit(event)}
+                                variant="light"
+                                className="form-submit-button"
+                                onClick={() => routeToLogin()}
                             >
-                                Sign up
+                                {windowWidth > THRESHOLD
+                                    ? "Already have an account?"
+                                    : "Sign in"}
                             </Button>
-                        ) : (
-                            <Button
-                                variant="info"
-                                disabled="disabled"
-                                type="submit"
-                                className={"form-submit-button disabled"}
-                                onClick={(event) => handleSubmit(event)}
-                            >
-                                Sign up
-                            </Button>
-                        )}
-                    </div>
-                    <div className="text-center second-option-container">
-                        <Button
-                            variant="light"
-                            className="form-submit-button"
-                            onClick={() => routeToLogin()}
-                        >
-                            {windowWidth > THRESHOLD
-                                ? "Already have an account?"
-                                : "Sign in"}
-                        </Button>
-                    </div>
-                </Form>
+                        </div>
+                    </Form>
+                </div>
             </Container>
         </Container>
     ) : (

@@ -25,6 +25,23 @@
     min-height: 550px;
 }
 
+.wrapper-button {
+    width: 100%;
+    height: min-content;
+    background: none;
+    border: none;
+    outline: none;
+}
+
+#facebook-button-wrapper {
+    margin: 0px;
+}
+
+#facebook-button-wrapper {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
 .regular-input {
     color: rgb(182, 182, 182);
 }

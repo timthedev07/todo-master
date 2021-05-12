@@ -13,46 +13,64 @@ import {
     Redirect,
 } from "react-router-dom";
 import Nav from "./components/Nav";
+// importing contexts
 import { AuthProvider, useAuth } from "./context/AuthContext";
+import { TaskManager } from "./context/TasksContext";
 
 function App() {
     const { currentUser } = useAuth();
 
     return (
         <AuthProvider>
-            <Router>
-                <Switch>
-                    <Route exact path="/">
-                        <Heading alignment="center" />
-                        <Home />
-                    </Route>
-                    <Route exact path="/dashboard">
-                        <Nav />
-                        <Dashboard />
-                    </Route>
-                    <Route exact path="/login">
-                        <Nav />
-                        {currentUser === null ? (
-                            <Login />
-                        ) : (
-                            <Redirect to="/dashboard" />
-                        )}
-                    </Route>
-                    <Route exact path="/register">
-                        <Nav />
-                        {currentUser === null ? (
-                            <Register />
-                        ) : (
-                            <Redirect to="/dashboard" />
-                        )}
-                    </Route>
-                    <Route exact path="/forgot-password">
-                        <Nav />
-                        <ForgotPassword />
-                    </Route>
-                    <Route component={NotFound} />
-                </Switch>
-            </Router>
+            <TaskManager>
+                <Router>
+                    <Switch>
+                        {/* Main ones */}
+                        <Route exact path="/">
+                            <Heading alignment="center" />
+                            <Home />
+                        </Route>
+                        <Route exact path="/dashboard">
+                            <Nav />
+                            <Dashboard />
+                        </Route>
+
+                        {/* Auth */}
+                        <Route exact path="/login">
+                            <Nav />
+                            {currentUser === null ? (
+                                <Login />
+                            ) : (
+                                <Redirect to="/dashboard" />
+                            )}
+                        </Route>
+                        <Route exact path="/register">
+                            <Nav />
+                            {currentUser === null ? (
+                                <Register />
+                            ) : (
+                                <Redirect to="/dashboard" />
+                            )}
+                        </Route>
+
+                        <Route exact path="/forgot-password">
+                            <Nav />
+                            <ForgotPassword />
+                        </Route>
+
+                        {/* 404 */}
+                        <Route component={NotFound} />
+
+                        {/* Avoid possible wrong routes */}
+                        <Route exact path="/signup">
+                            <Redirect to="/register" />
+                        </Route>
+                        <Route exact path="/signup">
+                            <Redirect to="/register" />
+                        </Route>
+                    </Switch>
+                </Router>
+            </TaskManager>
         </AuthProvider>
     );
 }

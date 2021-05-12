@@ -1,7 +1,6 @@
 import { Component, createRef } from "react";
 import { Button, Container, Form } from "react-bootstrap";
 import { ReactComponent as CloseIcon } from "../icons/close.svg";
-import { updateTask } from "../helpers/Tasks";
 
 export class TaskDetails extends Component {
     constructor(props) {
@@ -61,11 +60,12 @@ export class TaskDetails extends Component {
         const title = this.titleRef.current.value;
         const body = this.contentRef.current.value;
         let id = this.props.id;
-        updateTask({
-            id: id,
-            newTitle: title,
-            newBody: body,
-        });
+        // TODO: change the implementation of update task
+        // updateTask({
+        //     id: id,
+        //     newTitle: title,
+        //     newBody: body,
+        // });
         this.resetAddPopup(false);
         this.setState(this.state);
     };
