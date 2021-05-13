@@ -26,9 +26,9 @@ export default function Nav() {
         return unsubscribe;
     }, [currentUser]);
 
-    function handleLogout() {
-        logout();
-        window.location.reload();
+    async function handleLogout() {
+        await logout();
+        await window.location.reload();
     }
 
     const navBar = (

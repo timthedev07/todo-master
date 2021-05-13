@@ -46,7 +46,6 @@ export function TaskManager({ children }) {
      * options = {
      *     newTitle: String,
      *     newBody: String,
-     *     done: Boolean,
      * }
      * ```
      *
@@ -58,13 +57,25 @@ export function TaskManager({ children }) {
     function updateTask(id, options) {
         let elementRef = db.collection("tasks").doc(id);
         elementRef
-            .set(options)
+            .update(options)
             .then(() => {
                 return true;
             })
             .catch((err) => {
                 return false;
             });
+    }
+
+    /**
+     * Mark a given task with `id` as done, returns a promise
+     * @param {string} id
+     * @param {*} options
+     */
+    function markAsDone(id) {
+        let elementRef = db.collection("tasks").doc(id);
+        return elementRef.update({
+            done: true,
+        });
     }
 
     /**
@@ -72,28 +83,14 @@ export function TaskManager({ children }) {
      * @param {string} id
      */
     function deleteTask(id) {
-        db.collection("tasks")
-            .doc(id)
-            .delete()
-            .then(() => {
-                return true;
-            })
-            .catch((error) => {
-                console.error("Error removing task: ", error);
-                return false;
-            });
+        return db.collection("tasks").doc(id).delete();
     }
 
     /**
-     * Returns a list of json objects representing all tasks that belong to the user with `uid`
-     * @param {String} uid
-     */
-    function retrieveTasksOfUser(uid) {
-        // get all tasks where the uid equals the given value
-        db.collection("tasks")
-            .where("uid", "==", uid)
-            .get()
-            .then((snapshot) => {
+     * Returns a promise, which then is going to be dealt as follows:
+     *
+     * ```js
+     * call.then((snapshot) => {
                 let res = [];
                 snapshot.forEach((doc) => {
                     // include the doc id in each returned object
@@ -101,11 +98,18 @@ export function TaskManager({ children }) {
                     buffer["id"] = doc.id;
                     res.push(buffer);
                 });
+                console.log(res);
                 return res;
             })
             .catch((err) => {
                 console.error("Error retrieving tasks: ", err);
             });
+     * ```
+     * @param {String} uid
+     */
+    function retrieveTasksOfUser(uid) {
+        // get all tasks where the uid equals the given value
+        return db.collection("tasks").where("uid", "==", uid).get();
     }
 
     const value = {
@@ -113,6 +117,8 @@ export function TaskManager({ children }) {
         retrieveTask,
         updateTask,
         deleteTask,
+        retrieveTasksOfUser,
+        markAsDone,
     };
 
     return (

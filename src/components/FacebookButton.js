@@ -1,9 +1,11 @@
 import React from "react";
+import { useAuth } from "../context/AuthContext";
 import { ReactComponent as FacebookIcon } from "../icons/facebook.svg";
 export default function FacebookButton(props) {
+    const { signinWithFacebook } = useAuth();
     return (
         <div
-            onClick={props.handleClick}
+            onClick={() => signinWithFacebook()}
             type="dark"
             tabIndex={0}
             role="button"

@@ -21,7 +21,7 @@ export function Login() {
     const [loading, setLoading] = useState(false);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
-    const { login, signinWithGoogle, signinWithFacebook } = useAuth();
+    const { login } = useAuth();
 
     function routeToRegister() {
         setLocation("/register");
@@ -35,15 +35,7 @@ export function Login() {
         window.addEventListener("resize", handleResize);
     });
 
-    function googleSignin() {
-        signinWithGoogle();
-    }
-
-    function facebookSignin() {
-        signinWithFacebook();
-    }
-
-    function handleSubmit(event) {
+    async function handleSubmit(event) {
         // prevent reload
         event.preventDefault();
 
@@ -53,9 +45,9 @@ export function Login() {
         const email = emRef.current.value;
         const password = pwRef.current.value;
 
-        setAlertMessage("");
-        setAlertDisplay("hidden");
-        login(email, password)
+        await setAlertMessage("");
+        await setAlertDisplay("hidden");
+        await login(email, password)
             .then((userCredential) => {
                 // Signed in
                 // var user = userCredential.user;
@@ -78,12 +70,9 @@ export function Login() {
 
             <Container className="d-flex">
                 <div>
-                    <GoogleButton
-                        style={{ width: "100%" }}
-                        onClick={() => googleSignin()}
-                    />
+                    <GoogleButton style={{ width: "100%" }} />
 
-                    <FacebookButton handleClick={facebookSignin} />
+                    <FacebookButton />
 
                     <Form className="from-as-wrapper">
                         <Alert

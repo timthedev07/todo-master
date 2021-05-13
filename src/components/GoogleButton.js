@@ -1,8 +1,12 @@
 import React from "react";
+import { useAuth } from "../context/AuthContext";
+
 export default function GoogleButton(props) {
+    const { signinWithGoogle } = useAuth();
+
     return (
         <div
-            onClick={props.handleClick}
+            onClick={() => signinWithGoogle()}
             type="dark"
             tabIndex={0}
             role="button"
