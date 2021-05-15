@@ -11,9 +11,17 @@ export function useTasks() {
 export function TaskManager({ children }) {
     const { currentUser } = useAuth();
 
+    /**
+     *
+     * Returns an promise
+     *
+     * @param {String} title
+     * @param {String} body
+     * @returns
+     */
     function createTask(title, body) {
         // create a new document
-        db.collection("tasks").doc().set({
+        return db.collection("tasks").doc().set({
             body: body,
             done: false,
             title: title,
@@ -21,49 +29,23 @@ export function TaskManager({ children }) {
             uid: currentUser["uid"],
         });
     }
-
-    /**
-     * retrieve task by a given id, returns a json object containing the information,
-     * if the id is invalid and the task does not exist, return null
-     * @param {string} id
-     */
-    function retrieveTask(id) {
-        // create a new document
-        let elementRef = db.collection("tasks").doc(id);
-        elementRef.get().then((doc) => {
-            if (doc.exists) {
-                console.log(JSON.stringify(doc.data()));
-                return doc.data();
-            } else {
-                return null;
-            }
-        });
-    }
     /**
      * update a given task with id `id` using the given json object `options` structured as follows:
      *
      * ```javascript
      * options = {
-     *     newTitle: String,
-     *     newBody: String,
+     *     title: String,
+     *     body: String,
      * }
      * ```
      *
-     * Returns true if success, and false otherwise
+     * Returns a promise
      *
      * @param {string} id
      * @param {JSON} options
      */
     function updateTask(id, options) {
-        let elementRef = db.collection("tasks").doc(id);
-        elementRef
-            .update(options)
-            .then(() => {
-                return true;
-            })
-            .catch((err) => {
-                return false;
-            });
+        return db.collection("tasks").doc(id).update(options);
     }
 
     /**
@@ -87,34 +69,20 @@ export function TaskManager({ children }) {
     }
 
     /**
-     * Returns a promise, which then is going to be dealt as follows:
+     * Returns a promise
      *
-     * ```js
-     * call.then((snapshot) => {
-                let res = [];
-                snapshot.forEach((doc) => {
-                    // include the doc id in each returned object
-                    let buffer = doc.data();
-                    buffer["id"] = doc.id;
-                    res.push(buffer);
-                });
-                console.log(res);
-                return res;
-            })
-            .catch((err) => {
-                console.error("Error retrieving tasks: ", err);
-            });
-     * ```
      * @param {String} uid
      */
     function retrieveTasksOfUser(uid) {
         // get all tasks where the uid equals the given value
-        return db.collection("tasks").where("uid", "==", uid).get();
+        return db
+            .collection("tasks")
+            .where("uid", "==", uid)
+            .get({ source: "server" });
     }
 
     const value = {
         createTask,
-        retrieveTask,
         updateTask,
         deleteTask,
         retrieveTasksOfUser,

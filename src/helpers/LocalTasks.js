@@ -47,8 +47,6 @@ export function createTaskLocal(title, body) {
  *  @param {JSON} options accepts the structure above
  */
 export function updateTaskLocal(options) {
-    console.log("UPDating");
-    console.log(options);
     let tasks = JSON.parse(localStorage.getItem("tasks"));
     for (let i = 0; i < tasks.length; i++) {
         if (tasks[i].id === options.id) {

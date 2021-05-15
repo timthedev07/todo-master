@@ -4,9 +4,15 @@ import { useAuth } from "../context/AuthContext";
 export default function GoogleButton(props) {
     const { signinWithGoogle } = useAuth();
 
+    const handleClick = () => {
+        signinWithGoogle().catch((err) => {
+            props.displayErrMessage();
+        });
+    };
+
     return (
         <div
-            onClick={() => signinWithGoogle()}
+            onClick={() => handleClick()}
             type="dark"
             tabIndex={0}
             role="button"

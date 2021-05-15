@@ -27,6 +27,7 @@ function App() {
                     <Switch>
                         {/* Main ones */}
                         <Route exact path="/">
+                            {!currentUser ? null : <Nav />}
                             <Heading alignment="center" />
                             <Home />
                         </Route>

@@ -28,7 +28,11 @@ export function AddPopup(props) {
         const title = titleRef.current.value;
         const body = contentRef.current.value;
         if (currentUser) {
-            await createTask(title, body);
+            await createTask(title, body)
+                .then((res) => {})
+                .catch((err) => {
+                    console.log("Error: ", err);
+                });
         } else {
             createTaskLocal(title, body);
         }

@@ -11,6 +11,7 @@ const THRESHOLD = 290;
 
 export function Login() {
     const emRef = useRef();
+
     const pwRef = useRef();
 
     const [alertDisplay, setAlertDisplay] = useState("hidden");
@@ -19,7 +20,9 @@ export function Login() {
     const [redirect, setRedirect] = useState(false);
     const [location, setLocation] = useState("");
     const [loading, setLoading] = useState(false);
-    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+    const [windowWidth, setWindowWidth] = useState(() => {
+        return window.innerWidth;
+    });
 
     const { login } = useAuth();
 
@@ -28,12 +31,11 @@ export function Login() {
         setRedirect(true);
     }
 
-    useEffect(() => {
-        function handleResize() {
-            setWindowWidth(window.innerWidth);
-        }
-        window.addEventListener("resize", handleResize);
-    });
+    function displayError(message) {
+        setAlertMessage(message);
+        setAlertDisplay("visible");
+        setAlertType("danger");
+    }
 
     async function handleSubmit(event) {
         // prevent reload
@@ -45,8 +47,8 @@ export function Login() {
         const email = emRef.current.value;
         const password = pwRef.current.value;
 
-        await setAlertMessage("");
-        await setAlertDisplay("hidden");
+        setAlertMessage("");
+        setAlertDisplay("hidden");
         await login(email, password)
             .then((userCredential) => {
                 // Signed in
@@ -56,12 +58,16 @@ export function Login() {
                 setRedirect(true);
             })
             .catch((error) => {
-                setAlertMessage("Invalid email/password");
-                setAlertDisplay("visible");
-                setAlertType("danger");
-                setLoading(false);
+                displayError("Invalid email/password");
             });
     }
+
+    useEffect(() => {
+        function handleResize() {
+            setWindowWidth(window.innerWidth);
+        }
+        window.addEventListener("resize", handleResize);
+    });
 
     return !redirect ? (
         <Container className="panels">
@@ -70,9 +76,12 @@ export function Login() {
 
             <Container className="d-flex">
                 <div>
-                    <GoogleButton style={{ width: "100%" }} />
+                    <GoogleButton
+                        displayErrMessage={displayError}
+                        style={{ width: "100%" }}
+                    />
 
-                    <FacebookButton />
+                    <FacebookButton displayErrMessage={displayError} />
 
                     <Form className="from-as-wrapper">
                         <Alert

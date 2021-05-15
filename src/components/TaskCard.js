@@ -16,6 +16,9 @@ export function TaskCard(props) {
     const [displayDetails, setDisplayDetails] = useState("none");
     const { currentUser } = useAuth();
     const { deleteTask, markAsDone } = useTasks();
+    const [displayTitle, setTitle] = useState(() => props.object.title);
+    const [displayBody, setBody] = useState(() => props.object.body);
+    const [done, setDone] = useState(() => props.object.done);
     const forceUpdate = props.updater;
 
     function handleClick() {
@@ -24,55 +27,50 @@ export function TaskCard(props) {
 
     function resetAddPopupState() {
         setDisplayDetails("none");
-        forceUpdate();
     }
 
     function changeDisplayAttr(val) {
         setDisplayDetails(val);
     }
 
-    async function toggleDone() {
+    const updateContent = (title, body) => {
+        console.log(title, body);
+        console.log("UPDATING");
+        setTitle(title);
+        setBody(body);
+    };
+
+    function toggleDone() {
         if (currentUser) {
-            await markAsDone(props.object.id)
-                .then(() => {
-                    console.log("Marked as done");
-                })
-                .catch((err) => {
-                    console.log("Failed: ", err);
-                });
+            markAsDone(props.object.id).catch((err) => {
+                console.log("Failed: ", err);
+            });
         } else {
-            await updateTaskLocal({
+            updateTaskLocal({
                 id: props.object.id,
                 done: true,
             });
         }
         forceUpdate();
-        if (!currentUser) window.location.reload();
+        setDone((prev) => !prev);
     }
 
     async function handleDeleteRequest() {
         if (window.confirm("Are you sure to PERMANENTLY delete this task?")) {
             if (currentUser) {
-                await deleteTask(props.object.id)
-                    .then(() => {
-                        console.log("Removed");
-                        return true;
-                    })
-                    .catch((error) => {
-                        console.error("Error removing task: ", error);
-                        return false;
-                    });
+                await deleteTask(props.object.id).catch((error) => {
+                    console.error("Error removing task: ", error);
+                });
             } else {
                 deleteTaskLocal(props.object.id);
             }
             forceUpdate();
-            if (!currentUser) window.location.reload();
+            if (currentUser) window.location.reload();
         }
     }
 
     let img;
-    let task_info = props.object;
-    if (task_info.done) {
+    if (done) {
         img = <DoneIcon className="task-card-icon" />;
     } else {
         img = <NotDoneIcon className="task-card-icon" />;
@@ -80,20 +78,21 @@ export function TaskCard(props) {
 
     // Decide how to display the title, if it's too long, just replace the rest with ...
     let title;
+    let orig_title = displayTitle;
     if (
-        task_info.title.trim().indexOf(" ") < 0 /**if there is no space */ &&
-        task_info.title.length > TITLE_CHARS_THRESHOLD
+        orig_title.trim().indexOf(" ") < 0 /**if there is no space */ &&
+        orig_title.length > TITLE_CHARS_THRESHOLD
     ) {
-        title = `${task_info.title.trim().slice(0, TITLE_CHARS_THRESHOLD)}...`;
+        title = `${orig_title.trim().slice(0, TITLE_CHARS_THRESHOLD)}...`;
     } else {
-        title = task_info.title;
+        title = orig_title;
         for (
             let i = 0, sequence = title.split(" "), l = sequence.length;
             i < l;
             i++
         ) {
             if (sequence[i].length > TITLE_CHARS_THRESHOLD || l > 4) {
-                title = `${task_info.title
+                title = `${orig_title
                     .trim()
                     .slice(0, TITLE_CHARS_THRESHOLD)}...`;
                 break;
@@ -103,22 +102,21 @@ export function TaskCard(props) {
 
     // Decide how to display the body, if it's too long, just replace the rest with ...
     let body;
+    let orig_body = displayBody;
     if (
-        task_info.body.trim().indexOf(" ") < 0 &&
-        task_info.body.length > BODY_CHARS_THRESHOLD
+        orig_body.trim().indexOf(" ") < 0 &&
+        orig_body.length > BODY_CHARS_THRESHOLD
     ) {
-        body = `${task_info.body.trim().slice(0, BODY_CHARS_THRESHOLD)}...`;
+        body = `${orig_body.trim().slice(0, BODY_CHARS_THRESHOLD)}...`;
     } else {
-        body = task_info.body;
+        body = orig_body;
         for (
             let i = 0, sequence = body.split(" "), l = sequence.length;
             i < l;
             i++
         ) {
             if (sequence[i].length > BODY_CHARS_THRESHOLD || body.length > 90) {
-                body = `${task_info.body
-                    .trim()
-                    .slice(0, BODY_CHARS_THRESHOLD)}...`;
+                body = `${orig_body.trim().slice(0, BODY_CHARS_THRESHOLD)}...`;
                 break;
             }
         }
@@ -134,12 +132,11 @@ export function TaskCard(props) {
             </div>
             <TaskDetails
                 display={displayDetails}
-                title={props.object.title}
-                body={props.object.body}
+                title={displayTitle}
+                body={displayBody}
                 id={props.object.id}
-                done={props.object.done}
-                updater={props.updater}
                 bindingStateHandler={resetAddPopupState}
+                updateContent={updateContent}
                 stateModifier={changeDisplayAttr}
             />
             <div className="face face2">

@@ -27,22 +27,23 @@ export function Dashboard(props) {
 
     function useForceUpdate() {
         const [v, setV] = useState(false);
-        return () => setV(!v);
+        return () =>
+            setV((prevV) => {
+                return 1 < 3 ? !prevV : v;
+            });
     }
 
-    const updater = () => {
-        console.log("UPDating");
+    const updater = async () => {
         forceUpdate();
     };
+    // :
+    // console.log(currentUser["providerData"][0]["providerId"] || null);
 
-    async function resetAddPopupState() {
+    const resetAddPopupState = async () => {
         setAddPopup("none");
-        // if the data is inserted into the database instead of the localstorage
-        if (currentUser) {
-            forceUpdate();
-        } else {
-        }
-    }
+        forceUpdate();
+        if (currentUser) window.location.reload();
+    };
 
     const retrieveTasks = async () => {
         let res = [];
@@ -56,7 +57,7 @@ export function Dashboard(props) {
         } else {
             res = JSON.parse(localStorage.getItem("tasks"));
         }
-        return res;
+        localStorage.setItem("buffer", JSON.stringify(res));
     };
 
     let PopupDisplay;
@@ -65,12 +66,8 @@ export function Dashboard(props) {
     }
 
     let tasks_render = [];
-    let promise = retrieveTasks();
-    promise.then((stuff) => {
-        localStorage.setItem("buffer", JSON.stringify(stuff));
-    });
+    retrieveTasks();
     let tasks = JSON.parse(localStorage.getItem("buffer"));
-    console.log("This is the data: ", tasks);
 
     if (tasks === null || tasks === undefined || tasks.length < 1) {
         tasks_render.push(
@@ -81,7 +78,6 @@ export function Dashboard(props) {
     } else {
         let l = tasks.length;
         for (let i = 0; i < l; i++) {
-            console.log(tasks[i]);
             tasks_render.push(
                 <TaskCard
                     updater={updater}

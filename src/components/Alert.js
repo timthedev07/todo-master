@@ -5,7 +5,7 @@ export class Alert extends Component {
     render() {
         const visibility = {
             visibility: this.props.visibility,
-            height: "50px",
+            minHeight: "50px",
         };
         return (
             <BootstrapAlert

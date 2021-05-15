@@ -12,10 +12,9 @@ export function TaskDetails(props) {
     const [body, setBody] = useState(props.body);
     const { currentUser } = useAuth();
     const { updateTask } = useTasks();
-    const forceUpdate = props.updater;
 
     function handleCloseClick() {
-        // when use clicks the close button, do check for any unsaved edits.
+        // when user clicks the close button, check for any unsaved edits.
         resetAddPopup(true);
     }
 
@@ -50,15 +49,18 @@ export function TaskDetails(props) {
         }
     }
 
-    function handleSubmit(event) {
+    async function handleSubmit(event) {
         event.preventDefault();
         // get new values and id
         const new_title = titleRef.current.value;
         const new_body = contentRef.current.value;
         let id = props.id;
         if (currentUser) {
-            // TODO: change the implementation of update task
-            updateTask(id, { newTitle: new_title, newBody: new_body });
+            updateTask(id, { title: new_title, body: new_body }).catch(
+                (err) => {
+                    console.log("ERROR: ", err);
+                }
+            );
         } else {
             updateTaskLocal({
                 id: id,
@@ -66,9 +68,9 @@ export function TaskDetails(props) {
                 newBody: new_body,
             });
         }
+        props.updateContent(new_title, new_body);
         resetAddPopup(false);
-        forceUpdate();
-        if (!currentUser) window.location.reload();
+        // if (currentUser) window.location.reload();
     }
 
     // field on change handlers

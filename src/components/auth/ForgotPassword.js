@@ -13,7 +13,9 @@ export function ForgotPassword() {
     const [alertType, setAlertType] = useState("danger");
     const [alertMessage, setAlertMessage] = useState("");
     const [loading, setLoading] = useState(false);
-    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+    const [windowWidth, setWindowWidth] = useState(() => {
+        return window.innerWidth;
+    });
 
     const { resetPassword } = useAuth();
 
@@ -35,7 +37,7 @@ export function ForgotPassword() {
         const email = emRef.current.value;
         resetPassword(email)
             .then(() => {
-                setAlertMessage("Sent, check email for further instruction");
+                setAlertMessage("Check email for further instruction");
                 setAlertDisplay("visible");
                 setAlertType("success");
                 setLoading(false);

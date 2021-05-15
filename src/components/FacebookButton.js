@@ -3,9 +3,20 @@ import { useAuth } from "../context/AuthContext";
 import { ReactComponent as FacebookIcon } from "../icons/facebook.svg";
 export default function FacebookButton(props) {
     const { signinWithFacebook } = useAuth();
+
+    const handleClick = () => {
+        signinWithFacebook()
+            .then()
+            .catch((err) => {
+                props.displayErrMessage(
+                    "The email associated with this Facebook account has already registered with another provider"
+                );
+            });
+    };
+
     return (
         <div
-            onClick={() => signinWithFacebook()}
+            onClick={() => handleClick()}
             type="dark"
             tabIndex={0}
             role="button"

@@ -20,7 +20,9 @@ export function Register() {
     const [redirect, setRedirect] = useState(false);
     const [location, setLocation] = useState("");
     const [loading, setLoading] = useState(false);
-    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+    const [windowWidth, setWindowWidth] = useState(() => {
+        return window.innerWidth;
+    });
 
     useEffect(() => {
         function handleResize() {

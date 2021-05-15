@@ -6,7 +6,9 @@ const THRESHOLD = 520;
 
 export default function Nav() {
     // teep track of screen size
-    const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+    const [screenWidth, setScreenWidth] = useState(() => {
+        return window.innerWidth;
+    });
     const [currentUser, setCurrentUser] = useState();
     const [loggedIn, setLoggedIn] = useState();
     const { logout } = useAuth();
@@ -28,7 +30,7 @@ export default function Nav() {
 
     async function handleLogout() {
         await logout();
-        await window.location.reload();
+        window.location.reload();
     }
 
     const navBar = (
