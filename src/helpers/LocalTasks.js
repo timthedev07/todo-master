@@ -6,18 +6,17 @@
 export function createTaskLocal(title, body) {
     let ls = localStorage.getItem("tasks");
     let tasks;
-    if (!ls) {
+    if (!ls || ls === "null") {
         tasks = [];
     } else {
         tasks = JSON.parse(ls);
     }
-    let id = tasks.length;
+    let id = tasks.length + 3;
     tasks.push({
         id: id,
         title: title,
         body: body,
         done: false,
-        tags: [],
     });
     if (localStorage.getItem("num_tasks") === null) {
         localStorage.setItem("num_tasks", "0");

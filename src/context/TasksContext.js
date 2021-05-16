@@ -21,10 +21,10 @@ export function TaskManager({ children }) {
      */
     function createTask(title, body) {
         // create a new document
-        return db.collection("tasks").doc().set({
-            body: body,
+        return db.collection("tasks").add({
+            body: body || "There's nothing because i'm lazy",
             done: false,
-            title: title,
+            title: title || "Not even a title?",
             // setting the uid to identify which user the task belongs to
             uid: currentUser["uid"],
         });
@@ -45,7 +45,12 @@ export function TaskManager({ children }) {
      * @param {JSON} options
      */
     function updateTask(id, options) {
-        return db.collection("tasks").doc(id).update(options);
+        let copy = { ...options };
+        if (copy.body === "" || copy.body === null)
+            copy.body = "There's nothing because i'm lazy";
+        if (copy.title === "" || copy.title === null)
+            copy.title = "Still no title :)";
+        return db.collection("tasks").doc(id).update(copy);
     }
 
     /**
@@ -75,10 +80,7 @@ export function TaskManager({ children }) {
      */
     function retrieveTasksOfUser(uid) {
         // get all tasks where the uid equals the given value
-        return db
-            .collection("tasks")
-            .where("uid", "==", uid)
-            .get({ source: "server" });
+        return db.collection("tasks").where("uid", "==", uid).get();
     }
 
     const value = {

@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { Dropdown } from "react-bootstrap";
+import { Dropdown, Button } from "react-bootstrap";
 import { auth } from "../firebaseSetup";
 import { useAuth } from "../context/AuthContext";
-const THRESHOLD = 520;
+import { ReactComponent as RefreshIcon } from "../icons/refresh.svg";
+const THRESHOLD = 600;
 
-export default function Nav() {
+export default function Nav(props) {
     // teep track of screen size
     const [screenWidth, setScreenWidth] = useState(() => {
         return window.innerWidth;
@@ -51,6 +52,14 @@ export default function Nav() {
                     <div>signin</div>
                 </a>
             )}
+            <Button
+                onClick={() => props.forceUpdate()}
+                variant="success"
+                className="btn btn-success navbar-refresh"
+                id="refresh-icon-container-nav-bar"
+            >
+                <RefreshIcon id="refresh-icon" />
+            </Button>
         </div>
     );
 
@@ -83,6 +92,16 @@ export default function Nav() {
                             signin
                         </Dropdown.Item>
                     )}
+                    <Dropdown.Item className="nav-dropdown-item">
+                        <Button
+                            onClick={() => props.forceUpdate()}
+                            variant="success"
+                            className="btn btn-success navbar-refresh"
+                            id="refresh-icon-container"
+                        >
+                            <RefreshIcon id="refresh-icon" />
+                        </Button>
+                    </Dropdown.Item>
                 </Dropdown.Menu>
             </Dropdown>
         </div>

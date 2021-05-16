@@ -3,10 +3,14 @@ import { useAuth } from "../context/AuthContext";
 
 export default function GoogleButton(props) {
     const { signinWithGoogle } = useAuth();
-
     const handleClick = () => {
         signinWithGoogle().catch((err) => {
-            props.displayErrMessage();
+            if (err.code === "auth/unauthorized-domain") {
+                props.displayErrMessage("Unauthorized domain");
+                props.displayErrMessage(err.message);
+                return;
+            }
+            props.displayErrMessage(err.message);
         });
     };
 

@@ -71,6 +71,7 @@ export function Register() {
             setLoading(false);
             return;
         }
+        localStorage.setItem("newTask", "true");
 
         setAlertMessage("");
         setAlertDisplay("hidden");
@@ -108,10 +109,10 @@ export function Register() {
                     <GoogleButton
                         style={{ width: "100%" }}
                         onClick={() => googleSignin()}
-                        text="Sign up with google"
+                        text="Sign up with Google"
                     />
                     <FacebookButton
-                        text="Sign up with google"
+                        text="Sign up with Facebook"
                         handleClick={facebookSignin}
                     />
                     <Form className="from-as-wrapper" id="register-form">

@@ -32,7 +32,6 @@ function App() {
                             <Home />
                         </Route>
                         <Route exact path="/dashboard">
-                            <Nav />
                             <Dashboard />
                         </Route>
 

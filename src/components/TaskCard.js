@@ -15,6 +15,7 @@ const BODY_CHARS_THRESHOLD = 80;
 export function TaskCard(props) {
     const [displayDetails, setDisplayDetails] = useState("none");
     const { currentUser } = useAuth();
+    const [componentDisplay, setComponentDisplay] = useState("inline-block");
     const { deleteTask, markAsDone } = useTasks();
     const [displayTitle, setTitle] = useState(() => props.object.title);
     const [displayBody, setBody] = useState(() => props.object.body);
@@ -34,8 +35,6 @@ export function TaskCard(props) {
     }
 
     const updateContent = (title, body) => {
-        console.log(title, body);
-        console.log("UPDATING");
         setTitle(title);
         setBody(body);
     };
@@ -52,21 +51,21 @@ export function TaskCard(props) {
             });
         }
         forceUpdate();
-        setDone((prev) => !prev);
+        setDone(true);
     }
 
-    async function handleDeleteRequest() {
-        if (window.confirm("Are you sure to PERMANENTLY delete this task?")) {
-            if (currentUser) {
-                await deleteTask(props.object.id).catch((error) => {
-                    console.error("Error removing task: ", error);
-                });
-            } else {
-                deleteTaskLocal(props.object.id);
-            }
-            forceUpdate();
-            if (currentUser) window.location.reload();
+    function handleDeleteRequest() {
+        if (!window.confirm("Are you sure to PERMANENTLY delete this task?"))
+            return;
+        if (currentUser) {
+            deleteTask(props.object.id).catch((error) => {
+                console.error("Error removing task: ", error);
+            });
+        } else {
+            deleteTaskLocal(props.object.id);
         }
+        setComponentDisplay("none");
+        forceUpdate();
     }
 
     let img;
@@ -123,7 +122,7 @@ export function TaskCard(props) {
     }
 
     return (
-        <div className="card">
+        <div className="card" style={{ display: componentDisplay }}>
             <div className="face face1">
                 <div className="card-content">
                     {img}
@@ -138,6 +137,7 @@ export function TaskCard(props) {
                 bindingStateHandler={resetAddPopupState}
                 updateContent={updateContent}
                 stateModifier={changeDisplayAttr}
+                updater={forceUpdate}
             />
             <div className="face face2">
                 <div className="card-content">

@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button, Container, Form } from "react-bootstrap";
 import { useAuth } from "../context/AuthContext";
 import { updateTaskLocal } from "../helpers/LocalTasks";
@@ -12,6 +12,12 @@ export function TaskDetails(props) {
     const [body, setBody] = useState(props.body);
     const { currentUser } = useAuth();
     const { updateTask } = useTasks();
+    const forceUpdate = props.updater;
+
+    useEffect(() => {
+        titleRef.current.value = title;
+        contentRef.current.value = body;
+    });
 
     function handleCloseClick() {
         // when user clicks the close button, check for any unsaved edits.
@@ -19,6 +25,7 @@ export function TaskDetails(props) {
     }
 
     function resetFields() {
+        console.log("Resetting");
         setTitle(props.title);
         setBody(props.body);
     }
@@ -43,7 +50,6 @@ export function TaskDetails(props) {
                 props.stateModifier("none");
             }
         } else {
-            resetFields();
             props.bindingStateHandler();
             props.stateModifier("none");
         }
@@ -58,7 +64,7 @@ export function TaskDetails(props) {
         if (currentUser) {
             updateTask(id, { title: new_title, body: new_body }).catch(
                 (err) => {
-                    console.log("ERROR: ", err);
+                    console.error("ERROR: ", err);
                 }
             );
         } else {
@@ -70,15 +76,7 @@ export function TaskDetails(props) {
         }
         props.updateContent(new_title, new_body);
         resetAddPopup(false);
-        // if (currentUser) window.location.reload();
-    }
-
-    // field on change handlers
-    function handleBodyChange(event) {
-        setBody(event.target.value);
-    }
-    function handleTitleChange(event) {
-        setTitle(event.target.value);
+        forceUpdate();
     }
 
     let display_style = props.display;
@@ -98,24 +96,20 @@ export function TaskDetails(props) {
                 <Form>
                     <Form.Group>
                         <Form.Control
-                            value={title}
                             className="mono bg-dark"
                             ref={titleRef}
                             placeholder="Title - pick a short and memorable one"
                             id="new-task-title"
                             type="text"
                             maxLength={32}
-                            onChange={(event) => handleTitleChange(event)}
                         />
                         <Form.Control
-                            value={body}
                             className="markdown ta-form mono bg-dark"
                             maxLength="500"
                             ref={contentRef}
                             as="textarea"
                             placeholder="Something about the task..."
                             rows="14"
-                            onChange={(event) => handleBodyChange(event)}
                         />
                     </Form.Group>
                     <Button

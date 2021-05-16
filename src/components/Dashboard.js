@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Container } from "react-bootstrap";
 import { Popup } from "./Popup.js";
 import { AddPopup } from "./addPopup";
 import { TaskCard } from "./TaskCard";
 import { useTasks } from "../context/TasksContext";
 import { useAuth } from "../context/AuthContext";
+import Nav from "./Nav.js";
 
 export function Dashboard(props) {
     const tipPopup = localStorage.getItem("showtip-addTask");
@@ -12,14 +13,6 @@ export function Dashboard(props) {
     const { retrieveTasksOfUser } = useTasks();
     const { currentUser } = useAuth();
     const forceUpdate = useForceUpdate();
-
-    function changeDisplayAttr(val) {
-        setAddPopup(val);
-    }
-
-    function handleClickAddPopup() {
-        displayAddPopup();
-    }
 
     function displayAddPopup() {
         setAddPopup("block");
@@ -33,21 +26,17 @@ export function Dashboard(props) {
             });
     }
 
-    const updater = async () => {
-        forceUpdate();
-    };
-    // :
     // console.log(currentUser["providerData"][0]["providerId"] || null);
 
-    const resetAddPopupState = async () => {
+    const resetAddPopupState = () => {
         setAddPopup("none");
         forceUpdate();
-        if (currentUser) window.location.reload();
     };
 
     const retrieveTasks = async () => {
         let res = [];
-        if (currentUser !== null) {
+        if (currentUser) {
+            // retrieve all tasks from the database
             const snapshot = await retrieveTasksOfUser(currentUser["uid"]);
             await snapshot.forEach((doc) => {
                 let buffer = doc.data();
@@ -60,6 +49,15 @@ export function Dashboard(props) {
         localStorage.setItem("buffer", JSON.stringify(res));
     };
 
+    useEffect(() => {
+        setTimeout(() => {
+            if (localStorage.getItem("newTask") === "true") {
+                localStorage.setItem("newTask", "false");
+                forceUpdate();
+            }
+        }, 1000);
+    });
+
     let PopupDisplay;
     if (tipPopup === "true" || tipPopup === "null" || tipPopup === null) {
         PopupDisplay = <Popup />;
@@ -68,8 +66,14 @@ export function Dashboard(props) {
     let tasks_render = [];
     retrieveTasks();
     let tasks = JSON.parse(localStorage.getItem("buffer"));
+    if (localStorage.getItem("newTask") === "true") {
+        forceUpdate();
+        localStorage.setItem("newTask", "false");
+        localStorage.setItem("reload", "true");
+        localStorage.setItem("reload-count", "0");
+    }
 
-    if (tasks === null || tasks === undefined || tasks.length < 1) {
+    if (!tasks || tasks.length < 1) {
         tasks_render.push(
             <h5 key="no-tasks" style={{ textAlign: "center", color: "white" }}>
                 No Tasks To Do Yet...
@@ -77,52 +81,54 @@ export function Dashboard(props) {
         );
     } else {
         let l = tasks.length;
+        // console.log("======================================");
         for (let i = 0; i < l; i++) {
+            // console.log(tasks[i]);
             tasks_render.push(
                 <TaskCard
-                    updater={updater}
+                    updater={forceUpdate}
                     object={tasks[i]}
                     key={tasks[i].id.toString()}
                 />
             );
         }
+        // console.log("======================================");
     }
 
     return (
-        <div id="dashboard-container">
-            {PopupDisplay}
-            <AddPopup
-                display={addPopup}
-                bindingStateHandler={resetAddPopupState}
-                stateModifier={changeDisplayAttr}
-            />
-            <Container
-                style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                }}
-            >
-                <Button
-                    style={{ marginTop: "40px" }}
-                    id="add-popup-trigger-button"
-                    variant="info"
-                    onClick={() => handleClickAddPopup()}
+        <>
+            <Nav forceUpdate={forceUpdate} />
+            <div id="dashboard-container">
+                {PopupDisplay}
+                <AddPopup
+                    display={addPopup}
+                    bindingStateHandler={resetAddPopupState}
+                    stateModifier={setAddPopup}
+                    updater={forceUpdate}
+                />
+
+                <Container
+                    style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                    }}
                 >
-                    Add a New Task
-                </Button>
-            </Container>
-            <br />
-            <Container
-                style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                }}
-            ></Container>
-            <div className="flex-wrapper">
-                <div id="tasks-container">{tasks_render}</div>
+                    <Button
+                        style={{ marginTop: "40px" }}
+                        id="add-popup-trigger-button"
+                        variant="info"
+                        onClick={() => displayAddPopup()}
+                    >
+                        Add a New Task
+                    </Button>
+                </Container>
+                <br />
+
+                <div className="flex-wrapper">
+                    <div id="tasks-container">{tasks_render}</div>
+                </div>
             </div>
-        </div>
+        </>
     );
 }

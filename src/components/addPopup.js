@@ -11,6 +11,7 @@ export function AddPopup(props) {
 
     const { createTask } = useTasks();
     const { currentUser } = useAuth();
+    const forceUpdate = props.updater;
 
     function handleClick() {
         resetAddPopup();
@@ -28,15 +29,15 @@ export function AddPopup(props) {
         const title = titleRef.current.value;
         const body = contentRef.current.value;
         if (currentUser) {
-            await createTask(title, body)
-                .then((res) => {})
-                .catch((err) => {
-                    console.log("Error: ", err);
-                });
+            await createTask(title, body).catch((err) => {
+                console.error("Error: ", err);
+            });
         } else {
             createTaskLocal(title, body);
+            forceUpdate();
         }
         resetAddPopup();
+        localStorage.setItem("newTask", "true");
     };
 
     let display_style = props.display;
@@ -57,6 +58,7 @@ export function AddPopup(props) {
                         placeholder="Title"
                         id="new-task-title"
                         type="text"
+                        required
                         maxLength={32}
                     />
                     <Form.Control

@@ -42,6 +42,7 @@ export function Login() {
         event.preventDefault();
 
         setLoading(true);
+        localStorage.setItem("newTask", "true");
 
         // get the values of the fields
         const email = emRef.current.value;
