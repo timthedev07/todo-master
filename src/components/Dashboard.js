@@ -26,8 +26,6 @@ export function Dashboard(props) {
             });
     }
 
-    // console.log(currentUser["providerData"][0]["providerId"] || null);
-
     const resetAddPopupState = () => {
         setAddPopup("none");
         forceUpdate();
@@ -81,9 +79,7 @@ export function Dashboard(props) {
         );
     } else {
         let l = tasks.length;
-        // console.log("======================================");
         for (let i = 0; i < l; i++) {
-            // console.log(tasks[i]);
             tasks_render.push(
                 <TaskCard
                     updater={forceUpdate}
@@ -92,7 +88,6 @@ export function Dashboard(props) {
                 />
             );
         }
-        // console.log("======================================");
     }
 
     return (

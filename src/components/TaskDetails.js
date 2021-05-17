@@ -15,8 +15,8 @@ export function TaskDetails(props) {
     const forceUpdate = props.updater;
 
     useEffect(() => {
-        titleRef.current.value = title;
-        contentRef.current.value = body;
+        titleRef.current.value = props.title;
+        contentRef.current.value = props.body;
     });
 
     function handleCloseClick() {
@@ -25,7 +25,6 @@ export function TaskDetails(props) {
     }
 
     function resetFields() {
-        console.log("Resetting");
         setTitle(props.title);
         setBody(props.body);
     }
