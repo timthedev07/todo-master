@@ -7,7 +7,6 @@ export default function GoogleButton(props) {
         signinWithGoogle().catch((err) => {
             if (err.code === "auth/unauthorized-domain") {
                 props.displayErrMessage("Unauthorized domain");
-                props.displayErrMessage(err.message);
                 return;
             }
             props.displayErrMessage(err.message);

@@ -5,9 +5,7 @@ export default function FacebookButton(props) {
     const { signinWithFacebook } = useAuth();
     const handleClick = () => {
         signinWithFacebook().catch((err) => {
-            props.displayErrMessage(
-                "The email associated with this Facebook account has already registered with another provider"
-            );
+            props.displayErrMessage(err.message);
         });
     };
 
