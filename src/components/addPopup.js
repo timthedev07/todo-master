@@ -5,6 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import { createTaskLocal } from "../helpers/LocalTasks";
 import { ReactComponent as CloseIcon } from "../icons/close.svg";
 
+
 export function AddPopup(props) {
     const titleRef = useRef();
     const contentRef = useRef();
@@ -39,7 +40,7 @@ export function AddPopup(props) {
         resetAddPopup();
         localStorage.setItem("newTask", "true");
     };
-
+  
     let display_style = props.display;
 
     return (
