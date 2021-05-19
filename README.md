@@ -8,6 +8,8 @@ In the project directory, you can run:
 
 ### `yarn start`
 
+Or to start localhost with https: `HTTPS=true npm start`
+
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 

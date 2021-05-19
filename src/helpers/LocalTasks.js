@@ -1,36 +1,43 @@
 /**
  * Creates a task.
- * @param {*} title 
- * @param {*} body 
+ * @param {*} title
+ * @param {*} body
  */
-export function createTask(title, body) {
-    let ls = localStorage.getItem('tasks');
-    let tasks = JSON.parse(ls);
-    let id = tasks.length;
+export function createTaskLocal(title, body) {
+    let ls = localStorage.getItem("tasks");
+    let tasks;
+    if (!ls || ls === "null") {
+        tasks = [];
+    } else {
+        tasks = JSON.parse(ls);
+    }
+    let id = tasks.length + 3;
     tasks.push({
         id: id,
         title: title,
         body: body,
         done: false,
-        tags: []
     });
-    if (localStorage.getItem('num_tasks') === null) {
-        localStorage.setItem('num_tasks', '0');
+    if (localStorage.getItem("num_tasks") === null) {
+        localStorage.setItem("num_tasks", "0");
     } else {
-        localStorage.setItem('num_tasks', `${parseInt(localStorage.getItem('num_tasks')) + 1}`);
+        localStorage.setItem(
+            "num_tasks",
+            `${parseInt(localStorage.getItem("num_tasks")) + 1}`
+        );
     }
-    localStorage.setItem('tasks', JSON.stringify(tasks));
+    localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
 /**
- * 
- * 
- * 
+ *
+ *
+ *
  * ```javascript
  * options = {
  *     id: Number,
  *     newTitle: String,
- *     newBody: String, 
+ *     newBody: String,
  *     done: Boolean,
  *     newTags: Array,
  *     tagsToRemove: Array
@@ -38,9 +45,8 @@ export function createTask(title, body) {
  * ```
  *  @param {JSON} options accepts the structure above
  */
-export function updateTask(options) {
-    console.log(options)
-    let tasks = JSON.parse(localStorage.getItem('tasks'));
+export function updateTaskLocal(options) {
+    let tasks = JSON.parse(localStorage.getItem("tasks"));
     for (let i = 0; i < tasks.length; i++) {
         if (tasks[i].id === options.id) {
             // if no input is provided, then keep the previous one
@@ -52,11 +58,11 @@ export function updateTask(options) {
             break;
         }
     }
-    localStorage.setItem('tasks', JSON.stringify(tasks));
+    localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
-export function deleteTask(id) {
-    let tasks = JSON.parse(localStorage.getItem('tasks'));
+export function deleteTaskLocal(id) {
+    let tasks = JSON.parse(localStorage.getItem("tasks"));
     let new_tasks = [...tasks];
     for (let i = 0; i < tasks.length; i++) {
         if (tasks[i].id === id) {
@@ -64,12 +70,12 @@ export function deleteTask(id) {
             break;
         }
     }
-    localStorage.setItem('tasks', JSON.stringify(new_tasks));
+    localStorage.setItem("tasks", JSON.stringify(new_tasks));
 }
 
 /**
  * Returns a json object representing a task:
- * 
+ *
  * ```
  * task: {
  *     id: Number,
@@ -77,11 +83,11 @@ export function deleteTask(id) {
  *     body: String
  * }
  * ```
- * @param {int} id 
- * @returns 
+ * @param {int} id
+ * @returns
  */
-export function retrieveTask(id) {
-    let tasks = JSON.parse(localStorage.getItem('tasks'));
+export function retrieveTaskLocal(id) {
+    let tasks = JSON.parse(localStorage.getItem("tasks"));
     for (let i = 0; i < tasks.length; i++) {
         if (tasks[i].id === id) {
             return tasks[i];

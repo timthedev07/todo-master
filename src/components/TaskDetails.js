@@ -1,130 +1,124 @@
-import { Component, createRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button, Container, Form } from "react-bootstrap";
+import { useAuth } from "../context/AuthContext";
+import { updateTaskLocal } from "../helpers/LocalTasks";
 import { ReactComponent as CloseIcon } from "../icons/close.svg";
-import { updateTask } from "../helpers/Tasks";
+import { useTasks } from "../context/TasksContext";
 
-export class TaskDetails extends Component {
+export function TaskDetails(props) {
+    const titleRef = useRef();
+    const contentRef = useRef();
+    const [title, setTitle] = useState(props.title);
+    const [body, setBody] = useState(props.body);
+    const { currentUser } = useAuth();
+    const { updateTask } = useTasks();
+    const forceUpdate = props.updater;
 
-  constructor(props) {
-    super(props);
-    this.titleRef = createRef();
-    this.contentRef = createRef();
-    this.state = {
-      title: this.props.title,
-      body: this.props.body,
-      infoUpdated: false,
-    }
-  }
-
-  handleCloseClick = () => {
-    // when use clicks the close button, do check for any unsaved edits.
-    this.resetAddPopup(true);
-  }
-
-  resetFields = () => {
-    this.setState({
-      title: this.props.title,
-      body: this.props.body
+    useEffect(() => {
+        titleRef.current.value = props.title;
+        contentRef.current.value = props.body;
     });
-  }
 
-  resetAddPopup = (check) => {
-    if (check) {
-      if (this.state.title !== this.props.title || this.state.body !== this.props.body) {
-        if (window.confirm('You have unsaved changes, sure want to leave?')) {
-          this.resetFields();
-          this.props.bindingStateHandler();
-          this.props.stateModifier('none');
+    function handleCloseClick() {
+        // when user clicks the close button, check for any unsaved edits.
+        resetAddPopup(true);
+    }
 
-          return;
+    function resetFields() {
+        setTitle(props.title);
+        setBody(props.body);
+    }
+
+
+    function resetAddPopup(check) {
+        if (check) {
+            if (title !== props.title || body !== props.body) {
+                if (
+                    window.confirm(
+                        "You have unsaved changes, sure want to leave?"
+                    )
+                ) {
+                    resetFields();
+                    props.bindingStateHandler();
+                    props.stateModifier("none");
+                    return;
+                }
+            } else {
+                resetFields();
+                props.bindingStateHandler();
+                props.stateModifier("none");
+            }
+        } else {
+            props.bindingStateHandler();
+            props.stateModifier("none");
         }
-      } else {
-        this.resetFields();
-        this.props.bindingStateHandler();
-        this.props.stateModifier('none');
-      }
-    } else {
-      this.resetFields();
-      this.props.bindingStateHandler();
-      this.props.stateModifier('none');
     }
 
-  }
+    async function handleSubmit(event) {
+        event.preventDefault();
+        // get new values and id
+        const new_title = titleRef.current.value;
+        const new_body = contentRef.current.value;
+        let id = props.id;
+        if (currentUser) {
+            updateTask(id, { title: new_title, body: new_body }).catch(
+                (err) => {
+                    console.error("ERROR: ", err);
+                }
+            );
+        } else {
+            updateTaskLocal({
+                id: id,
+                newTitle: new_title,
+                newBody: new_body,
+            });
+        }
+        props.updateContent(new_title, new_body);
+        resetAddPopup(false);
+        forceUpdate();
+    }
 
-  handleSubmit = (event) => {
-    event.preventDefault();
-    const title = this.titleRef.current.value;
-    const body = this.contentRef.current.value;
-    let id = this.props.id;
-    updateTask({
-      id: id,
-      newTitle: title,
-      newBody: body
-    });
-    this.resetAddPopup(false);
-    this.setState(this.state);
-  }
-
-  // field on change handlers
-  handleBodyChange = (event) => {
-    this.setState({
-      body: event.target.value
-    })
-  }
-  handleTitleChange = (event) => {
-    this.setState({
-      title: event.target.value
-    })
-  }
-
-
-  render() {
-    let display_style = this.props.display;
+    let display_style = props.display;
 
     return (
-      <div
-        id="add-popup-container"
-        className="popup-container"
-        style={{
-          display: display_style.toLowerCase(),
-        }}>
-
-        <Container className="add-task-container">
-          <div id="close-icon-wrapper" onClick={() => this.handleCloseClick()}>
-            <CloseIcon />
-          </div>
-          <Form>
-            <Form.Group>
-
-              <Form.Control
-                value={this.state.title}
-                className="mono bg-dark"
-                ref={this.titleRef}
-                placeholder="Title - pick a short and memorable one"
-                id="new-task-title"
-                type="text"
-                maxLength={32}
-                onChange={(event) => this.handleTitleChange(event)} />
-              <Form.Control
-                value={this.state.body}
-                className="markdown ta-form mono bg-dark"
-                maxLength="500"
-                ref={this.contentRef}
-                as="textarea"
-                placeholder="Something about the task..."
-                rows="14"
-                onChange={(event) => this.handleBodyChange(event)} />
-
-            </Form.Group>
-            <Button
-              onClick={(event) => this.handleSubmit(event)}
-              variant="primary"
-            >
-              Edit
-                </Button>
-          </Form>
-        </Container>
-      </div>
+        <div
+            id="add-popup-container"
+            className="popup-container"
+            style={{
+                display: display_style.toLowerCase(),
+            }}
+        >
+            <Container className="add-task-container">
+                <div id="close-icon-wrapper" onClick={() => handleCloseClick()}>
+                    <CloseIcon />
+                </div>
+                <Form>
+                    <Form.Group>
+                        <Form.Control
+                            className="mono bg-dark"
+                            ref={titleRef}
+                            placeholder="Title - pick a short and memorable one"
+                            id="new-task-title"
+                            type="text"
+                            maxLength={32}
+                        />
+                        <Form.Control
+                            className="markdown ta-form mono bg-dark"
+                            maxLength="500"
+                            ref={contentRef}
+                            as="textarea"
+                            placeholder="Something about the task..."
+                            rows="14"
+                        />
+                    </Form.Group>
+                    <Button
+                        onClick={(event) => handleSubmit(event)}
+                        variant="primary"
+                    >
+                        Edit
+                    </Button>
+                </Form>
+            </Container>
+        </div>
     );
-  }
 }

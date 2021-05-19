@@ -1,80 +1,129 @@
-import { Component, createRef } from "react";
+import { useEffect, useState } from "react";
 import { Button, Container } from "react-bootstrap";
 import { Popup } from "./Popup.js";
 import { AddPopup } from "./addPopup";
-import { retrieve } from "../helpers/Config";
 import { TaskCard } from "./TaskCard";
+import { useTasks } from "../context/TasksContext";
+import { useAuth } from "../context/AuthContext";
+import Nav from "./Nav.js";
 
-export class Dashboard extends Component {
-    constructor(props) {
-        super(props);
-        this.titleRef = createRef();
-        this.contentRef = createRef();
-        this.state = {
-            "tip-popup": retrieve('showtip-addTask'),
-            "add-popup": "none"
-        }
+export function Dashboard(props) {
+    const tipPopup = localStorage.getItem("showtip-addTask");
+    const [addPopup, setAddPopup] = useState("none");
+    const { retrieveTasksOfUser } = useTasks();
+    const { currentUser } = useAuth();
+    const forceUpdate = useForceUpdate();
+
+    function displayAddPopup() {
+        setAddPopup("block");
     }
 
-    changeDisplayAttr = (val) => {
-        this.setState({
-            "add-popup": val
-        });
+    function useForceUpdate() {
+        const [v, setV] = useState(false);
+        return () =>
+            setV((prevV) => {
+                return 1 < 3 ? !prevV : v;
+            });
     }
 
-    handleClickAddPopup = () => {
-        this.displayAddPopup();
-    }
+    const resetAddPopupState = () => {
+        setAddPopup("none");
+        forceUpdate();
+    };
 
-    displayAddPopup = () => {
-        this.setState({
-            "add-popup": 'block'
-        });
-    }
-
-    resetAddPopupState = () => {
-        this.setState({
-            "add-popup": 'none'
-        })
-    }
-
-    render() {
-        let PopupDisplay;
-        
-        if (this.state["tip-popup"] === true) {
-            PopupDisplay = <Popup />;
-        }
-
-        let tasks_render = [];
-        let tasks = JSON.parse(localStorage.getItem('tasks'));
-        if (tasks === null) {
-            tasks_render.push(<h2 key="no-tasks" style={{textAlign: 'center', color: 'white'}}>No Tasks To Do Yet...</h2>)
+    const retrieveTasks = async () => {
+        let res = [];
+        if (currentUser) {
+            // retrieve all tasks from the database
+            const snapshot = await retrieveTasksOfUser(currentUser["uid"]);
+            await snapshot.forEach((doc) => {
+                let buffer = doc.data();
+                buffer["id"] = doc.id;
+                res.push(buffer);
+            });
         } else {
-            let l = tasks.length;
-            for (let i = 0; i < l; i++) {
-                tasks_render.push((
-                    <TaskCard
-                        object={tasks[i]}
-                        key={tasks[i].id.toString()} />
-                ))
-            }
+            res = JSON.parse(localStorage.getItem("tasks"));
         }
-        return (
+        localStorage.setItem("buffer", JSON.stringify(res));
+    };
+
+    useEffect(() => {
+        setTimeout(() => {
+            if (localStorage.getItem("newTask") === "true") {
+                localStorage.setItem("newTask", "false");
+                forceUpdate();
+            }
+        }, 1000);
+    });
+
+    let PopupDisplay;
+    if (tipPopup === "true" || tipPopup === "null" || tipPopup === null) {
+        PopupDisplay = <Popup />;
+    }
+
+    let tasks_render = [];
+    retrieveTasks();
+    let tasks = JSON.parse(localStorage.getItem("buffer"));
+    if (localStorage.getItem("newTask") === "true") {
+        forceUpdate();
+        localStorage.setItem("newTask", "false");
+        localStorage.setItem("reload", "true");
+        localStorage.setItem("reload-count", "0");
+    }
+
+    if (!tasks || tasks.length < 1) {
+        tasks_render.push(
+            <h5 key="no-tasks" style={{ textAlign: "center", color: "white" }}>
+                No Tasks To Do Yet...
+            </h5>
+        );
+    } else {
+        let l = tasks.length;
+        for (let i = 0; i < l; i++) {
+            tasks_render.push(
+                <TaskCard
+                    updater={forceUpdate}
+                    object={tasks[i]}
+                    key={tasks[i].id.toString()}
+                />
+            );
+        }
+    }
+
+    return (
+        <>
+            <Nav forceUpdate={forceUpdate} />
             <div id="dashboard-container">
                 {PopupDisplay}
-                <AddPopup display={this.state["add-popup"]} bindingStateHandler={this.resetAddPopupState} stateModifier={this.changeDisplayAttr} />
-                <Container style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                    <Button style={{margin: 'auto'}} id="add-popup-trigger-button" variant="info" onClick={() => this.handleClickAddPopup()}>Add a New Task</Button>
+                <AddPopup
+                    display={addPopup}
+                    bindingStateHandler={resetAddPopupState}
+                    stateModifier={setAddPopup}
+                    updater={forceUpdate}
+                />
+
+                <Container
+                    style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                    }}
+                >
+                    <Button
+                        style={{ marginTop: "40px" }}
+                        id="add-popup-trigger-button"
+                        variant="info"
+                        onClick={() => displayAddPopup()}
+                    >
+                        Add a New Task
+                    </Button>
                 </Container>
                 <br />
-                <Container style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                </Container>
+
                 <div className="flex-wrapper">
-                    <div id="tasks-container">
-                        {tasks_render}
-                    </div>
+                    <div id="tasks-container">{tasks_render}</div>
                 </div>
             </div>
-        )
-    }
+        </>
+    );
 }

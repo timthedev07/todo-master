@@ -1,7 +1,7 @@
 .popup-container {
     width: 55vw;
     height: 80vh;
-    background-color: #109c79ec;
+    background-color: #109c79fb;
     border-radius: 20px;
     border: solid gray 1px;
     position: fixed;
@@ -10,6 +10,7 @@
     transform: translate(-50%, -50%);
     padding: 7px;
     padding-bottom: 14vh;
+    overflow-x: hidden;
     overflow-y: scroll;
 }
 
