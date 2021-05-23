@@ -29,6 +29,7 @@ export function TaskDetails(props) {
         setBody(props.body);
     }
 
+
     function resetAddPopup(check) {
         if (check) {
             if (title !== props.title || body !== props.body) {
@@ -40,7 +41,6 @@ export function TaskDetails(props) {
                     resetFields();
                     props.bindingStateHandler();
                     props.stateModifier("none");
-
                     return;
                 }
             } else {
